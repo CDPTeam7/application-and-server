@@ -124,4 +124,4 @@ function logout() {
 '''
 
 if __name__ == '__main__': # 이 파일이 직접 실행되야만 해당 코드 실행
-   app.run('0.0.0.0', port=5000, debug=True)
+   app.run('0.0.0.0', port=8080, debug=True)
