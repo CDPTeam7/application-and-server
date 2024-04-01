@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "server"
+version = "0.1.0"
+description = ""
+authors = ["lnsqj123 <holmane33@gmail.com>"]
+readme = "README.md"
+packages = [{include = "server", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^3.0.2"
+flask-cors = "^4.0.0"
+pymongo = "^4.6.3"
+pyjwt = "^2.8.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

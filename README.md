@@ -1,70 +1,66 @@
-# Getting Started with Create React App
+## poetry 설치
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- macOS: $ brew install poetry
+- linux
+  - 첫번째 방법: $ curl -sSL https://install.python-poetry.org | python3 -
+  - 두번째 방법: $ pip3 install poetry
+- windows:
+  - powershell에서 다음 명령 실시: $ (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -
 
-## Available Scripts
+## pyproject.toml 파일 생성
 
-In the project directory, you can run:
+- $ poetry init
 
-### `npm start`
+## 패키지 설치
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- $ poetry add [패키지명]
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 설치된 패키지 목록 확인
 
-### `npm test`
+- $ poetry show
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 패키지 삭제
 
-### `npm run build`
+- $ poetry remove [패키지명]
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 파이썬 파일 실행
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- $ poetry run python3 [파이썬파일명]
+- $ poetry run python .\src\server\server.py
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## pyproject.toml에 기재된 의존성 설치
 
-### `npm run eject`
+- $ poetry install
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 의존성의 최신 버전을 얻고 poetry.lock 업데이트
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- $ poetry update
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## poetry 환경 확인
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- $ poetry env info
 
-## Learn More
+## 가상환경 생성
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- $ poetry env use $PYTHON_HOME/bin/python3
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## poetry 파이썬 버전 변경
 
-### Code Splitting
+- $ poetry env use /path/to/preferred/python/version
+  - 예시: $ poetry env use /Library/Developer/CommandLineTools/usr/bin/python3.9
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 가상환경 삭제
 
-### Analyzing the Bundle Size
+- $ poetry env remove $PYTHON_HOME/bin/python3
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 가상환경 접속
 
-### Making a Progressive Web App
+- $ poetry shell
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 가상환경 정보 확인
 
-### Advanced Configuration
+- $ poetry env info
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 가상환경 삭제
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- $ poetry env remove $PYTHON_HOME/bin/python3
