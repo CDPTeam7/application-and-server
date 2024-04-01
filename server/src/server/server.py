@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify # flask 관련 라이브러리
-from flask_cors import CORS # CORS 미들웨어를 위한 모듈
+#from flask_cors import CORS # CORS 미들웨어를 위한 모듈
 import pymongo # mongoDB와의 연결을 위한 모듈
 import hashlib # 비밀번호 암호화를 위한 모듈
 import datetime # JWT를 발급할 때 속성으로 같이 줄 시간을 위한 모듈
@@ -9,7 +9,7 @@ import jwt # jwt 토큰을 발급하기 위한 모듈
 client = pymongo.MongoClient(host='localhost', port=27017) # mongoDB와 연결 (http://localhost:27017)
 db = client.mongodb_tutorial # mongoDB 내에서 사용할 DB와 연결
 app = Flask(__name__) # flask 객체를 생성. __name__은 현재 실행 중인 모듈 이름
-CORS(app, supports_credentials=True, resources={r'*': {'origins': 'http://localhost:3000'}})  # CORS 미들웨어 추가
+#CORS(app, supports_credentials=True, resources={r'*': {'origins': 'http://localhost:3000'}})  # CORS 미들웨어 추가
 SECRET_KEY = "b_4(!id8ro!1645n@ub55555hbu93gaia0" # 테스트용 secret key
 
 #API 테스트용

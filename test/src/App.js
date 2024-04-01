@@ -3,7 +3,7 @@ import axios from "axios"; // api call
 import { removeCookie, setCookie, getCookie } from "./Cookie";
 
 export default function App() {
-  axios.defaults.withCredentials = true; // CORS 관련 Credentials 코드
+  //axios.defaults.withCredentials = true; // CORS 관련 Credentials 코드
   const [Data1, setData1] = useState(undefined); // GetPoint용 state
   const [Data2, setData2] = useState(undefined); // AddPoint용 state
   const [LoginUser, setLoginUser] = useState({ id: "", pw: "" }); // Login용 state
@@ -18,13 +18,14 @@ export default function App() {
     try {
       const response = await axios.post(
         // axios를 이용한 api call
-        "http://127.0.0.1:5000/api/point/check", // 우선은 로컬로 실행
+        "/api/point/check", // 프록시
+        //"http://127.0.0.1:5000/api/point/check", // 우선은 로컬로 실행
         //const response = await axios.post("http://3.37.36.180:5000/api/data", {
         {
           // 보낼 데이터
           name: "Elly",
-        },
-        { withCredentials: true } // Credentials 코드
+        }
+        //{ withCredentials: true } // Credentials 코드
       );
       setData1(response.data.result_one); // state 변환
       console.log("Python 서버 응답:", response.data.result_one); // 디버깅용
@@ -42,7 +43,8 @@ export default function App() {
     try {
       const response = await axios.post(
         // axios를 이용한 api call
-        "http://127.0.0.1:5000/api/point/add", // 우선은 로컬로 실행
+        "/api/point/add", // 프록시
+        //"http://127.0.0.1:5000/api/point/add", // 우선은 로컬로 실행
         //const response = await axios.post("http://3.37.36.180:5000/api/data", {
         {
           // 보낼 데이터
@@ -64,7 +66,8 @@ export default function App() {
   const requestLogin = async (User) => {
     return await axios
       .post(
-        "http://127.0.0.1:5000/api/auth/login",
+        "/api/auth/login",
+        //"http://127.0.0.1:5000/api/auth/login",
         {
           user_id: User["id"],
           user_pw: User["pw"],
@@ -92,7 +95,8 @@ export default function App() {
   const requestSignup = async (User) => {
     return await axios
       .post(
-        "http://127.0.0.1:5000/api/auth/signup",
+        "/api/auth/signup",
+        //"http://127.0.0.1:5000/api/auth/signup",
         {
           user_id: User["id"],
           user_pw: User["pw"],
