@@ -209,6 +209,9 @@ export default function App() {
     });
   };
 
+  /*
+   * access/refresh Token이 있는지를 확인하기 위한 함수
+   */
   const checkToken = async () => {
     return await axios
       .post(
