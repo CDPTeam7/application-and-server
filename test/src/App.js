@@ -87,7 +87,7 @@ export default function App() {
       })
       .catch((e) => {
         console.log(e.response.data);
-        return "이메일 혹은 비밀번호를 확인하세요.";
+        return e.response.data;
       });
   };
 
@@ -112,7 +112,7 @@ export default function App() {
       })
       .catch((e) => {
         console.log(e.response.data);
-        return "이메일 혹은 비밀번호를 확인하세요.";
+        return e.response.data;
       });
   };
 
@@ -133,7 +133,7 @@ export default function App() {
       )
       .catch((e) => {
         console.log(e.response.data);
-        return "이메일 혹은 비밀번호를 확인하세요.";
+        return e.response.data;
       });
   };
 
@@ -223,7 +223,7 @@ export default function App() {
         }
       )
       .then((response) => {
-        console.log(response.data, response.data["access_token"]);
+        //console.log(response.data, response.data["access_token"]);
         setisAccessTokenVerify(response.data.result);
         setisRefreshTokenVerify(response.data.result);
         if (
@@ -235,7 +235,7 @@ export default function App() {
       })
       .catch((e) => {
         console.log(e.response.data);
-        return "이메일 혹은 비밀번호를 확인하세요.";
+        return e.response.data;
       });
   };
 

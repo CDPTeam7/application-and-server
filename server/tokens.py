@@ -1,11 +1,15 @@
 import jwt
 import datetime
 from database import db
+import os
+from dotenv import load_dotenv
 
 
-# 암호화/복호화할 때 사용되는 정보 - 이후에 다른 파일에 저장할 예정
-SECRET_KEY = "b_4(!id8ro!1645n@ub55555hbu93gaia0"  # 테스트용 secret key
-JWT_ALGORITHM = "HS256"
+# 전처리
+load_dotenv()
+SECRET_KEY = os.environ.get("SECRET_KEY")
+JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM")
+JWT_ALGORITHMS = os.environ.get("JWT_ALGORITHMS")
 
 
 # access token or refresh token을 만들어주는 함수
