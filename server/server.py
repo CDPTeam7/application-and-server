@@ -11,6 +11,7 @@ from tokens import *
 from auth import Auth
 from point import Point
 from ranking import Ranking
+from ai_service import Ai_service
 
 
 # 전처리
@@ -40,6 +41,7 @@ api.add_namespace(TestAPI, "/")
 api.add_namespace(Auth, "/api/auth")
 api.add_namespace(Point, "/api/point")
 api.add_namespace(Ranking, "/api/ranking")
+api.add_namespace(Ai_service, "/api/model")
 
 
 # API 테스트용
