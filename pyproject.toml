@@ -19,6 +19,7 @@ pillow = "^10.3.0"
 torchvision = "^0.17.2"
 ultralytics = "^8.1.44"
 numpy = "^1.26.4"
+gunicorn = "^21.2.0"
 
 
 [build-system]
