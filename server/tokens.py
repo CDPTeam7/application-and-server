@@ -52,7 +52,7 @@ def check_refresh_token(refresh_token):
             payload = None
         else:
         """
-        userinfo = db.user.find_one({"id": payload["id"]}, {"_id": 0})
+        userinfo = db.token.find_one({"user_id": payload["id"]}, {"_id": 0})
         # print(userinfo, refresh_token)
         if userinfo is None or userinfo["refresh_token"] != refresh_token:
             payload = None
