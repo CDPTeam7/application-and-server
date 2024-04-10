@@ -64,14 +64,14 @@ class api_register(Resource):
         ).hexdigest()  # password는 암호화해서 저장
         # print(id_receive, pw_receive, pw_hash)
         # 이미 존재하는 아이디면 패스
-        result = db.user.find_one({"id": id_receive})
+        result = db.user.find_one({"user_id": id_receive})
         if result is not None:
             return make_response(
                 jsonify({"result": "fail", "msg": "이미 존재하는 ID입니다."}), 401
             )
         else:
             db.user.insert_one(
-                {"id": id_receive, "pw": pw_hash, "refresh_token": None}
+                {"user_id": id_receive, "user_pw": pw_hash, "point": 0}
             )  # , 'nick': nickname_receive # id와 암호화된 pw를 user DB에 저장
             return make_response(jsonify({"result": "success"}), 202)
 
@@ -115,7 +115,7 @@ class api_login(Resource):
         pw_hash = hashlib.sha256(pw_receive.encode("utf-8")).hexdigest()
         # print(id_receive, pw_receive, pw_hash)
         # id, 암호화된 pw을 가지고 user DB로부터 해당 유저 찾기
-        result = db.user.find_one({"id": id_receive, "pw": pw_hash})
+        result = db.user.find_one({"user_id": id_receive, "user_pw": pw_hash})
 
         # 찾으면 JWT 토큰을 만들어 발급
         if result is not None:
@@ -129,8 +129,8 @@ class api_login(Resource):
                 refresh_token = generate_token(payload, "refresh")
                 # token return
                 # print(jwt.decode(access_token, SECRET_KEY, algorithms=["HS256"]))
-                db.user.update_one(
-                    {"id": id_receive}, {"$set": {"refresh_token": refresh_token}}
+                db.token.insert_one(
+                    {"user_id": id_receive, "refresh_token": refresh_token}
                 )
                 return make_response(
                     jsonify(
@@ -245,9 +245,14 @@ logout_response1 = Auth.model(
     "Logout_success", {"result": fields.String(example="success")}
 )
 logout_response2 = Auth.inherit(
-    "Logout_fail",
+    "Logout_fail1",
     signup_response2,
     {"msg": fields.String(example="access token이 없습니다.")},
+)
+logout_response3 = Auth.inherit(
+    "Logout_fail2",
+    signup_response2,
+    {"msg": fields.String(example="token에 대한 정보가 DB에 존재하지 않습니다.")},
 )
 
 
@@ -257,6 +262,7 @@ class api_logout(Resource):
     @Auth.expect(logout_fields)
     @Auth.response(202, "success", logout_response1)
     @Auth.response(401, "fail", logout_response2)
+    @Auth.response(402, "fail", logout_response3)
     def post(self):
         """logout을 합니다"""
         req = request.get_json()
@@ -273,8 +279,19 @@ class api_logout(Resource):
                 ),
                 401,
             )
-        db.user.update_one({"id": payload["id"]}, {"$set": {"refresh_token": None}})
-        return make_response(jsonify({"result": "success"}), 202)
+        result = db.token.delete_one({"user_id": payload["id"]})
+        if result.deleted_count == 1:
+            return make_response(jsonify({"result": "success"}), 202)
+        else:
+            return make_response(
+                jsonify(
+                    {
+                        "result": "fail",
+                        "msg": "token에 대한 정보가 DB에 존재하지 않습니다.",
+                    }
+                ),
+                402,
+            )
 
 
 # 보안: 로그인한 사용자만 통과할 수 있는 API # 얘는 아마 안 쓸 것 같음

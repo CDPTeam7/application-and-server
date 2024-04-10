@@ -19,7 +19,7 @@ point_check_fields = Point.model(
     },
 )
 point_check_response1_data = Point.model(
-    "Point_check_response1_data", {"point": fields.String(example=30)}
+    "Point_check_response1_data", {"point": fields.Integer(example=30)}
 )
 point_check_response1 = Point.model(
     "Point_check_success",
@@ -50,7 +50,7 @@ class check_point(Resource):
         id_receive = req["user_id"]
         try:
             # select 쿼리 실행: request의 name과 동일한 document 찾기
-            result = db.user.find_one({"id": id_receive}, {"_id": 0, "point": 1})
+            result = db.user.find_one({"user_id": id_receive}, {"_id": 0, "point": 1})
             # 데이터를 처리하고 응답 생성
             response_data = {
                 "result": "success",
@@ -72,7 +72,7 @@ point_check_via_token_fields = Point.model(
     },
 )
 point_check_via_token_response1_data = Point.model(
-    "Point_check_via_token_response1_data", {"point": fields.String(example=30)}
+    "Point_check_via_token_response1_data", {"point": fields.Integer(example=30)}
 )
 point_check_via_token_response1 = Point.inherit(
     "Point_check_via_token_success",
@@ -117,7 +117,7 @@ class check_point_via_token(Resource):
         try:
             id_receive = payload["id"]
             # select 쿼리 실행: request의 name과 동일한 document 찾기
-            result = db.user.find_one({"id": id_receive}, {"_id": 0, "point": 1})
+            result = db.user.find_one({"user_id": id_receive}, {"_id": 0, "point": 1})
             # 데이터를 처리하고 응답 생성
             response_data = {
                 "result": "success",
@@ -138,7 +138,7 @@ point_add_fields = Point.inherit(
     },
 )
 point_add_response1_data = Point.model(
-    "Point_add_response1_data", {"point": fields.String(example=30)}
+    "Point_add_response1_data", {"point": fields.Integer(example=30)}
 )
 point_add_response1 = Point.inherit(
     "Point_add_success",
@@ -170,7 +170,7 @@ class add_point(Resource):
         try:
             # find one and update 쿼리 실행: request의 name과 동일한 document에서 score 속성 값을 기존 값에서 request의 score 값만큼 증가(inc), 업데이트 이후에 값을 return
             result = db.user.find_one_and_update(
-                {"id": id_receive},
+                {"user_id": id_receive},
                 {"$inc": {"point": point_receive}},
                 projection={"_id": 0, "point": 1},
                 return_document=ReturnDocument.AFTER,
@@ -197,7 +197,7 @@ point_add_via_token_fields = Point.model(
     },
 )
 point_add_via_token_response1_data = Point.model(
-    "Point_add_via_token_response1_data", {"point": fields.String(example=30)}
+    "Point_add_via_token_response1_data", {"point": fields.Integer(example=30)}
 )
 point_add_via_token_response1 = Point.inherit(
     "Point_add_via_token_success",
@@ -244,7 +244,7 @@ class add_point_via_token(Resource):
             id_receive = payload["id"]
             # find one and update 쿼리 실행: request의 name과 동일한 document에서 score 속성 값을 기존 값에서 request의 score 값만큼 증가(inc), 업데이트 이후에 값을 return
             result = db.user.find_one_and_update(
-                {"id": id_receive},
+                {"user_id": id_receive},
                 {"$inc": {"point": point_receive}},
                 projection={"_id": 0, "point": 1},
                 return_document=ReturnDocument.AFTER,
