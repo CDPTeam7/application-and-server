@@ -129,9 +129,13 @@ class api_login(Resource):
                 refresh_token = generate_token(payload, "refresh")
                 # token return
                 # print(jwt.decode(access_token, SECRET_KEY, algorithms=["HS256"]))
-                db.token.insert_one(
-                    {"user_id": id_receive, "refresh_token": refresh_token}
+                result = db.token.update_one(
+                    {"user_id": id_receive}, {"$set": {"refresh_token": refresh_token}}
                 )
+                if result.matched_count == 0:
+                    db.token.insert_one(
+                        {"user_id": id_receive, "refresh_token": refresh_token}
+                    )
                 return make_response(
                     jsonify(
                         {
