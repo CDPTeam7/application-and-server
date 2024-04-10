@@ -16,7 +16,7 @@ JWT_ALGORITHMS = os.environ.get("JWT_ALGORITHMS")
 def generate_token(payload, type):
     if type == "access":
         # 2시간
-        exp = datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
+        exp = datetime.datetime.utcnow() + datetime.timedelta(hours=2)
     elif type == "refresh":
         # 2주
         exp = datetime.datetime.utcnow() + datetime.timedelta(weeks=2)
