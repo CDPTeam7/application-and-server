@@ -1,73 +1,121 @@
-import Button from "../components/common/Button";
-import TextInput from "../components/common/TextInput";
+import { Box, Button, Typography } from "@mui/material";
+import { TextField } from "@mui/material";
+
 import { css } from "@linaria/core";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import useAuthStore from "../store/AuthStore";
 import { useNavigate } from "react-router-dom";
 import Icon from "../components/common/Icon";
-import BackgroundOverlay from "../components/BackgroundOverlay";
-import Container from "../components/common/Container";
-import Title from "../components/common/Title";
-
-const bodyStyle = css`
-`;
-
-const titleStyle = css`
-  font-size: 1.8rem;
-  margin-bottom: 2.8rem;
-`;
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
 const buttonGroupStyle = css`
-  margin-top:3rem;
-  display:flex;
-  flex-direction:row;
-  gap:2rem;
+  margin-top: 3rem !important;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
   justify-content: space-between;
   & > * {
-    width:50%;
+    width: 50%;
   }
-`
+`;
+
+const containerStyle = css`
+  vertical-align: middle;
+  min-width: 100vw;
+  overflow:hidden;
+  height: 100vh;
+  display: table-cell;
+`;
+
+const iconStyle = css`
+  margin: 0 auto;
+  display: block;
+`;
+
+const textFieldStyle = css`
+  width: -webkit-fill-available;
+`;
 
 export default function SignupPage() {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const [pwCheck, setPwCheck] = useState("");
   const navigate = useNavigate();
+  const onLogin = useAuthStore((state) => state.login);
+
+  const requestLogin = () => {
+    if (onLogin(id, pw)) {
+      navigate("/");
+    } else {
+    }
+  };
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.key === "Enter") {
+      requestLogin();
+    }
+  };
 
   return (
-    <div className={bodyStyle}>
-      <BackgroundOverlay />
-      <Icon />
-      <Container>
-        <Title title="회원가입"/>
-        <TextInput
-          title={"아이디"}
-          name={"id"}
-          value={id}
-          id="id"
-          onChange={(e) => setId(e.target.value)}
-        />
-        <TextInput
-          title={"비밀번호"}
-          type="password"
-          name={"pw"}
-          id="pw"
-          value={pw}
-          onChange={(e) => setPw(e.target.value)}
-        />
-        <TextInput
-          title={"비밀번호 확인"}
-          type="password"
-          name={"pwcheck"}
-          id="pwcheck"
-          value={pwCheck}
-          onChange={(e) => setPwCheck(e.target.value)}
-        />
-        <div className={buttonGroupStyle}>
-          <Button type="sub" onClick={() => navigate("/login")}>이전</Button>
-          <Button >다음</Button>
-        </div>
-      </Container>
-    </div>
+    <Box className={containerStyle} onKeyDown={handleKeyDown}>
+      <Icon className={iconStyle} />
+      <Card
+        component="form"
+        variant="outlined"
+        sx={{
+          "& > :not(style)": { m: 1, boxSizing: "border-box" },
+          m: 3,
+        }}
+      >
+        <CardContent
+          sx={{
+            "& > :not(style)": { m: 1, boxSizing: "border-box" },
+          }}
+        >
+          <Typography variant="h4">회원가입</Typography>
+          <TextField
+            // title={"아이디"}
+            label="아이디"
+            variant="filled"
+            name={"id"}
+            value={id}
+            className={textFieldStyle}
+            id="signup-id"
+            onChange={(e) => setId(e.target.value)}
+          />
+          <TextField
+            // title={"비밀번호"}\
+            variant="filled"
+            label="비밀번호"
+            type="password"
+            className={textFieldStyle}
+            name={"pw"}
+            id="signup-pw"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
+          />
+          <TextField
+            // title={"비밀번호"}\
+            variant="filled"
+            label="비밀번호 확인"
+            type="password"
+            className={textFieldStyle}
+            name={"pw-check"}
+            id="signup-pw-check"
+            value={pwCheck}
+            onChange={(e) => setPwCheck(e.target.value)}
+          />
+          <div className={buttonGroupStyle}>
+            <Button variant="outlined" onClick={() => navigate("/login")}>
+              돌아가기
+            </Button>
+            <Button variant="contained">
+              다음
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
