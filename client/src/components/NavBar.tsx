@@ -4,15 +4,17 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Icon from './common/Icon';
 import useAuthStore from '../store/AuthStore';
+import { useLocation } from 'react-router-dom';
 
 export default function NavBar() {
   const auth = useAuthStore(state => state.isLoggedIn);
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -25,21 +27,20 @@ export default function NavBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed">
+      <AppBar position="fixed" sx={{background:"transparent", boxShadow:"0"}}>
         <Toolbar>
-          <IconButton
+          {
+            location.pathname !== "/" ? <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Icon style={{width:"72px"}}/>
-          </Typography>
-          {auth && (
+            <ArrowBackIcon />
+          </IconButton> : ""
+          }
+          {/* {auth && (
             <div>
               <IconButton
                 size="large"
@@ -70,7 +71,7 @@ export default function NavBar() {
                 <MenuItem onClick={handleClose}>My account</MenuItem>
               </Menu>
             </div>
-          )}
+          )} */}
         </Toolbar>
       </AppBar>
     </Box>

@@ -25,7 +25,7 @@ function App() {
         transition group 을 통해 slide page transition 을 하고 싶지만 시간이 없었습니다, */}
       {isLoggedIn ? <NavBar /> : null}
       <TransitionGroup className="transition-group">
-        <CSSTransition key={location.key} classNames="page-animation" timeout={30000}>
+        <CSSTransition key={location.key} classNames="page-animation" timeout={0}>
           {currentOutlet}
         </CSSTransition>
       </TransitionGroup>

@@ -15,6 +15,10 @@ body {
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 
+#root {
+  min-height:100vh;
+}
+
 .transition-group {
   overflow:hidden;
 }

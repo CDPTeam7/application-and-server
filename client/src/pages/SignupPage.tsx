@@ -2,7 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { TextField } from "@mui/material";
 
 import { css } from "@linaria/core";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import useAuthStore from "../store/AuthStore";
 import { useNavigate } from "react-router-dom";
 import Icon from "../components/common/Icon";
@@ -26,6 +26,17 @@ const containerStyle = css`
   overflow:hidden;
   height: 100vh;
   display: table-cell;
+`;
+
+const cardStyle = css`
+  & > :not(style) {
+    margin: 16px;
+    box-sizing : border-box;
+  }
+  margin: 16px;
+  border-radius:24px !important;
+  border:none !important;
+  box-shadow:0px 2px 4px 2px #0000000f;
 `;
 
 const iconStyle = css`
@@ -59,20 +70,19 @@ export default function SignupPage() {
 
   return (
     <Box className={containerStyle} onKeyDown={handleKeyDown}>
-      <Icon className={iconStyle} />
       <Card
         component="form"
         variant="outlined"
-        sx={{
-          "& > :not(style)": { m: 1, boxSizing: "border-box" },
-          m: 3,
-        }}
+        className={cardStyle}
       >
         <CardContent
           sx={{
             "& > :not(style)": { m: 1, boxSizing: "border-box" },
           }}
         >
+          <Box sx={{display:"flex", alignItems:"center", flexDirection:"column",marginBottom:"64px !important"}}>
+            <Icon className={iconStyle}/>
+          </Box>
           <Typography variant="h4">회원가입</Typography>
           <TextField
             // title={"아이디"}

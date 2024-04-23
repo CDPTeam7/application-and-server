@@ -28,6 +28,17 @@ const containerStyle = css`
   display: table-cell;
 `;
 
+const cardStyle = css`
+  & > :not(style) {
+    margin: 16px;
+    box-sizing : border-box;
+  }
+  margin: 16px;
+  border-radius:24px !important;
+  border:none !important;
+  box-shadow:0px 2px 4px 2px #0000000f;
+`;
+
 const iconStyle = css`
   margin: 0 auto;
   display: block;
@@ -62,19 +73,20 @@ export default function MainPage() {
 
   return (
     <Box className={containerStyle} onKeyDown={handleKeyDown}>
-      <Icon className={iconStyle}/>
+      
       <Card
         component="form"
         variant="outlined"
-        sx={{
-          "& > :not(style)": { m: 1, boxSizing: "border-box" },
-          m:3,
-        }}
+        className={cardStyle}
       >
         <CardContent sx={{
           "& > :not(style)": { m: 1, boxSizing: "border-box" },
         }}
         >
+        <Box sx={{display:"flex", alignItems:"center", flexDirection:"column",marginBottom:"64px !important"}}>
+          <Icon className={iconStyle}/>
+        </Box>
+          
         <Typography variant="h4">로그인</Typography>
         <Typography variant="subtitle1">
           에코스에 로그인하고 다양한 혜택을 누려보아요.

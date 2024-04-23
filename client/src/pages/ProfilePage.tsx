@@ -6,9 +6,7 @@ import {
   Badge,
   Box,
   Button,
-  Card,
   CardActions,
-  CardContent,
   CircularProgress,
   TextField,
   Typography,
@@ -17,6 +15,7 @@ import { PageContainer } from "../components/common/PageContainer";
 import EditIcon from "@mui/icons-material/Edit";
 import { css } from "@linaria/core";
 import { useEffect, useState } from "react";
+import PageCard from "../components/common/PageCard";
 
 const textFieldStyle = css`
   margin-top: 1.2rem !important;
@@ -47,79 +46,85 @@ export default function ProfilePage() {
   if (!isLoggedIn) {
     return <Navigate replace to="/login" />;
   }
-  
-  if(!name || !place) {
-    return <div style={{display:"flex", justifyContent:"center", alignItems:"center",width:"100vw", height:"100vh"}}>
-      <CircularProgress color="inherit" />
-    </div>
+
+  if (name === null || place === null) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress color="inherit" />
+      </div>
+    );
   }
 
   return (
     <PageContainer>
-      <Card variant="elevation" elevation={1}>
-        <CardContent>
-          <Typography variant="h5" margin={1}>
-            내 정보
-          </Typography>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Badge
-              overlap="circular"
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              badgeContent={
-                <EditIcon
-                  sx={{
-                    borderRadius: "50%",
-                    padding: "3px",
-                    background: "black",
-                    color: "white",
-                  }}
-                />
-              }
-            >
-              <Avatar
-                alt="User"
-                src="/static/images/avatar/1.jpg"
-                sx={{ width: 128, height: 128 }}
+      <PageCard>
+        <Typography variant="h5" margin={1}>
+          내 정보
+        </Typography>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Badge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            badgeContent={
+              <EditIcon
+                sx={{
+                  borderRadius: "50%",
+                  padding: "3px",
+                  background: "black",
+                  color: "white",
+                }}
               />
-            </Badge>
-          </div>
-          <Box sx={{ margin: "8px" }}>
-            <TextField
-              variant="standard"
-              value="김김김"
-              onChange={(e) => setName(e.target.value)}
-              label="이름"
-              InputProps={{
-                readOnly: !editState,
-              }}
-              className={textFieldStyle}
+            }
+          >
+            <Avatar
+              alt="User"
+              src="/static/images/avatar/1.jpg"
+              sx={{ width: 128, height: 128 }}
             />
-            <Autocomplete
-              renderInput={(params) => (
-                <TextField {...params} variant="standard" label="내 지역"/>
-              )}
-              options={[]}
-              className={textFieldStyle}
-            />
-            <TextField
-              variant="standard"
-              value="김김김"
-              label="이름"
-              InputProps={{
-                readOnly: !editState,
-              }}
-              className={textFieldStyle}
-            />
-          </Box>
-        </CardContent>
-        <CardActions sx={{ p: "16px" }}>
-          {editState ? (
-            <Button onClick={() => setEditState(false)}>저장하기</Button>
-          ) : (
-            <Button onClick={() => setEditState(true)}>수정하기</Button>
-          )}
+          </Badge>
+        </div>
+        <Box sx={{ margin: "8px" }}>
+          <TextField
+            variant="standard"
+            value={name ?? ""}
+            onChange={(e) => setName(e.target.value)}
+            label="이름"
+            InputProps={{
+              readOnly: !editState,
+            }}
+            className={textFieldStyle}
+          />
+          <Autocomplete
+            renderInput={(params) => (
+              <TextField {...params} variant="standard" label="내 지역" />
+            )}
+            options={[]}
+            className={textFieldStyle}
+          />
+          <TextField
+            variant="standard"
+            value="김김김"
+            label="이름"
+            InputProps={{
+              readOnly: !editState,
+            }}
+            className={textFieldStyle}
+          />
+        </Box>
+        <CardActions>
+          <Button variant="outlined" onClick={() => setEditState(!editState)}>
+            {editState ? "저장하기" : "수정하기"}
+          </Button>
         </CardActions>
-      </Card>
+      </PageCard>
     </PageContainer>
   );
 }
