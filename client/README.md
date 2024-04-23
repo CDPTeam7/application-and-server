@@ -2,6 +2,20 @@
 
 A sample PWA web app frontend created for a facial recognition preprocessing model.
 
+## Installation
+
+We use [`pnpm`](https://pnpm.io/ko/) for the package manager.
+
+To install dependencies, add `pnpm` to your `npm` package first.
+`pnpm` is not much different from `npm` commands.
+
+```bash
+npm install -g pnpm
+
+cd client # unless you are not in /client directory.
+pnpm install # install dependencies
+```
+
 ## Run development server
 
 Additional poetry scripts are not made yet.
