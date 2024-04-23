@@ -3,6 +3,7 @@ import { ThemeSheet } from "../theme/ThemeSheet";
 import useAuthStore from "../store/AuthStore";
 import { Navigate } from "react-router-dom";
 import {
+  Divider,
   Table,
   TableBody,
   TableCell,
@@ -15,10 +16,14 @@ import { useState } from "react";
 import { PageContainer } from "../components/common/PageContainer";
 import PageCard from "../components/common/PageCard";
 
-export default function PointsPage() {
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+const cardStyle = css`
+  margin:1rem;
+`
 
-  if (!isLoggedIn) {
+export default function PointPage() {
+  const isAuth = useAuthStore((state) => state.isAuth);
+
+  if (!isAuth) {
     return <Navigate replace to="/login" />;
   }
 
@@ -70,29 +75,26 @@ export default function PointsPage() {
 
   return (
     <PageContainer>
-      <PageCard>
-        <Typography variant="h5" margin={1}>
+      <PageCard className={cardStyle}>
+        <Typography variant="h5" sx={{marginBottom:"16px"}}>
           포인트 조회
         </Typography>
+        <Typography variant="body1" sx={{color:ThemeSheet.Gray[600]}}>현재 포인트</Typography>
         <Typography
-          variant="subtitle1"
-          sx={{ display: "flex", alignItems: "center", m: 1, gap: "1rem" }}
+          variant="body1"
+          sx={{ display: "flex", alignItems: "center", gap: "6px" }}
         >
-          <Typography variant="body1">
-            <p>
-              <Typography variant="body1">현재 포인트</Typography>
               <span
                 style={{ color: ThemeSheet.Branded[400], fontSize: "1.4rem" }}
               >
                 {1000}
               </span>{" "}
               원
-            </p>
-          </Typography>
         </Typography>
-        <TableContainer>
-          <Table aria-label="table">
-            <TableHead>
+        <Divider sx={{marginY:"16px"}}/>
+        <TableContainer sx={{borderRadius:"12px"}}>
+          <Table aria-label="table" >
+            <TableHead sx={{background:"#e7f5ea"}}>
               <TableRow>
                 {columns.map((column) => (
                   <TableCell

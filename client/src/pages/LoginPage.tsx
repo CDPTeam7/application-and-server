@@ -53,9 +53,9 @@ export default function MainPage() {
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
   const onLogin = useAuthStore((state) => state.login);
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const isAuth = useAuthStore((state) => state.isAuth);
 
-  if(isLoggedIn) {
+  if(isAuth) {
     return <Navigate replace to="/" />
   }
   const requestLogin = () => {

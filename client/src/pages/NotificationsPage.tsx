@@ -43,7 +43,7 @@ export default function NotificationsPage() {
 
   // LOGIC END
 
-  const auth = useAuthStore((state) => state.isLoggedIn);
+  const auth = useAuthStore((state) => state.isAuth);
 
   if (!auth) return <Navigate to="/login" />;
   return (

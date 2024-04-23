@@ -2,12 +2,12 @@ import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
 import { createRef } from "react";
 import SignupPage from "./pages/SignupPage";
-import RanksPage from "./pages/RanksPage";
+import RankPage from "./pages/RankPage";
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import ProfilePage from "./pages/ProfilePage";
 import NotificationsPage from "./pages/NotificationsPage";
-import PointsPage from "./pages/PointsPage";
+import PointPage from "./pages/PointPage";
 
 export interface TransitionRoute {
   path: string,
@@ -50,13 +50,13 @@ export const routes:TransitionRoute[] = [
   {
     path: "/points",
     name: "Points",
-    element: <PointsPage />,
+    element: <PointPage />,
     nodeRef:createRef(),
   },
   {
     path: "/ranks",
     name: "Ranks",
-    element: <RanksPage />,
+    element: <RankPage />,
     nodeRef: createRef(),
   },
   {

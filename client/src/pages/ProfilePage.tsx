@@ -28,8 +28,12 @@ const textFieldStyle = css`
   }
 `;
 
+const cardStyle = css`
+  margin:1rem;
+`
+
 export default function ProfilePage() {
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const isAuth = useAuthStore((state) => state.isAuth);
   const [editState, setEditState] = useState(false);
 
   // business logic 에서 초기값을 가져온다.
@@ -43,7 +47,7 @@ export default function ProfilePage() {
     // 페치에 실패했으면?
   }, []);
 
-  if (!isLoggedIn) {
+  if (!isAuth) {
     return <Navigate replace to="/login" />;
   }
 
@@ -65,8 +69,8 @@ export default function ProfilePage() {
 
   return (
     <PageContainer>
-      <PageCard>
-        <Typography variant="h5" margin={1}>
+      <PageCard className={cardStyle}>
+        <Typography variant="h5">
           내 정보
         </Typography>
         <div style={{ display: "flex", justifyContent: "center" }}>

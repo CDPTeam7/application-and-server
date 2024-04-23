@@ -33,9 +33,9 @@ const profileStyle = css`
 `
 
 export default function MainPage() {
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const isAuth = useAuthStore((state) => state.isAuth);
   const navigate = useNavigate();
-  if (!isLoggedIn) {
+  if (!isAuth) {
     return <Navigate replace to="/login" />;
   }
 
@@ -148,7 +148,7 @@ export default function MainPage() {
             </Box>
           </CardContent>
           <CardActions>
-            <Button onClick={() => navigate("points")}>더보기</Button>
+            <Button onClick={() => navigate("ranks")}>더보기</Button>
           </CardActions>
         </Card>
       </PageContainer>

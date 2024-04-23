@@ -2,18 +2,13 @@ import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-import Icon from './common/Icon';
 import useAuthStore from '../store/AuthStore';
 import { useLocation } from 'react-router-dom';
 
 export default function NavBar() {
-  const auth = useAuthStore(state => state.isLoggedIn);
+  const auth = useAuthStore(state => state.isAuth);
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
