@@ -4,7 +4,7 @@ import { TextField } from "@mui/material";
 import { css } from "@linaria/core";
 import { useState } from "react";
 import useAuthStore from "../store/AuthStore";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Icon from "../components/common/Icon";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -53,20 +53,28 @@ export default function SignupPage() {
   const [pw, setPw] = useState("");
   const [pwCheck, setPwCheck] = useState("");
   const navigate = useNavigate();
-  const onLogin = useAuthStore((state) => state.login);
+  const requestSignUp = useAuthStore((state) => state.signUp);
+  const isAuth = useAuthStore(state => state.isAuth);
 
-  const requestLogin = () => {
-    if (onLogin(id, pw)) {
-      navigate("/");
-    } else {
+  const handleSignUp = async () => {
+    if(pw !== pwCheck) {
+      console.log("비밀번호가 일치하지 않습니다.");
+      return;
     }
+    
+    const response = await requestSignUp(id, pw);
+    console.log(response.message);
   };
 
-  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = async (e) => {
     if (e.key === "Enter") {
-      requestLogin();
+      await handleSignUp();
     }
   };
+
+  if(isAuth) {
+    return <Navigate to="/"/>
+  }
 
   return (
     <Box className={containerStyle} onKeyDown={handleKeyDown}>
@@ -120,7 +128,7 @@ export default function SignupPage() {
             <Button variant="outlined" onClick={() => navigate("/login")}>
               돌아가기
             </Button>
-            <Button variant="contained">
+            <Button variant="contained" onClick={handleSignUp}>
               다음
             </Button>
           </div>

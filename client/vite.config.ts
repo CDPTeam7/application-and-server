@@ -32,10 +32,10 @@ export default defineConfig({
         target: 'http://localhost:8080', // Flask 애플리케이션의 주소
         changeOrigin: true,
       },
-      '/api(.*)': {
+      '/api': {
         target: 'http://localhost:8080', // Flask 애플리케이션의 주소
         changeOrigin: true,
-      },
+      }
     }
   }
 })

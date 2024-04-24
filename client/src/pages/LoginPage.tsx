@@ -51,27 +51,24 @@ const textFieldStyle = css`
 export default function MainPage() {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
+  const [loginState, setLoginState] = useState(0);
   const navigate = useNavigate();
-  const onLogin = useAuthStore((state) => state.login);
+  const loginRequest = useAuthStore((state) => state.login);
   const isAuth = useAuthStore((state) => state.isAuth);
 
-  if(isAuth) {
-    return <Navigate replace to="/" />
-  }
-  const requestLogin = () => {
-    if (onLogin(id, pw)) {
-      navigate("/");
-    } else {
-    }
+  const handleLogin = async () => {
+    const response = await loginRequest(id, pw);
+    console.log(response.status);
+    setLoginState(response.status);
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
     if (e.key === "Enter") {
-      requestLogin();
+      handleLogin();
     }
   };
-
-  return (
+  console.log(`isAuth = ${isAuth}`);
+  return isAuth ? <Navigate replace to="/" /> : (
     <Box className={containerStyle} onKeyDown={handleKeyDown}>
       
       <Card
@@ -116,7 +113,7 @@ export default function MainPage() {
           <Button variant="outlined" onClick={() => navigate("/signup")}>
             회원가입
           </Button>
-          <Button variant="contained" onClick={requestLogin}>
+          <Button variant="contained" onClick={handleLogin}>
             로그인
           </Button>
         </div>
