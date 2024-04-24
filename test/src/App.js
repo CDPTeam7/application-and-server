@@ -2,13 +2,15 @@ import { useState, useEffect } from "react"; // react hook
 import axios from "axios"; // api call
 import { removeCookie, setCookie, getCookie } from "./Cookie";
 
+axios.defaults.withCredentials = true; // Credentials 코드
+
 export default function App() {
-  //axios.defaults.withCredentials = true; // CORS 관련 Credentials 코드
   const [Data1, setData1] = useState(undefined); // GetPoint용 state
   const [Data2, setData2] = useState(undefined); // AddPoint용 state
   const [LoginUser, setLoginUser] = useState({ id: "", pw: "" }); // Login용 state
   const [SignupUser, setSignupUser] = useState({ id: "", pw: "" }); // Signup용 state
-
+  const [isAccessTokenVerify, setisAccessTokenVerify] = useState("");
+  const [isrefreshTokenVerify, setisRefreshTokenVerify] = useState("");
   /*
    * Server에게 User의 Point가 얼마나 있는지에 대한 request를 보내는 함수
    */
@@ -25,7 +27,6 @@ export default function App() {
           // 보낼 데이터
           name: "Elly",
         }
-        //{ withCredentials: true } // Credentials 코드
       );
       setData1(response.data.result_one); // state 변환
       console.log("Python 서버 응답:", response.data.result_one); // 디버깅용
@@ -50,8 +51,7 @@ export default function App() {
           // 보낼 데이터
           name: "Abet",
           score: 10,
-        },
-        { withCredentials: true } // Credentials 코드
+        }
       );
       setData2(response.data.result_one); // state 변환
       console.log("Python 서버 응답:", response.data.result_one); // 디버깅용
@@ -74,18 +74,20 @@ export default function App() {
         },
         {
           "Content-Type": "application/json",
-          withCredentials: true,
-          accessToken: await getCookie("accessToken"),
         }
       )
       .then((response) => {
         /// token이 필요한 API 요청 시 header Authorization에 token 담아서 보내기
-        //console.log(response.data);
+        /*
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${response.data.access_token} ${response.data.refresh_token}`;
+        */
         return response.data;
       })
       .catch((e) => {
         console.log(e.response.data);
-        return "이메일 혹은 비밀번호를 확인하세요.";
+        return e.response.data;
       });
   };
 
@@ -103,17 +105,35 @@ export default function App() {
         },
         {
           "Content-Type": "application/json",
-          withCredentials: true,
         }
       )
       .then((response) => {
-        /// token이 필요한 API 요청 시 header Authorization에 token 담아서 보내기
-        //console.log(response.data);
         return response.data;
       })
       .catch((e) => {
         console.log(e.response.data);
-        return "이메일 혹은 비밀번호를 확인하세요.";
+        return e.response.data;
+      });
+  };
+
+  /*
+   * Server에게 SignUp에 대한 request를 보내는 함수
+   */
+  const requestLogout = async () => {
+    return await axios
+      .post(
+        "/api/auth/logout",
+        //"http://127.0.0.1:5000/api/auth/logout",
+        {
+          access_token: await getCookie("accessToken"),
+        },
+        {
+          "Content-Type": "application/json",
+        }
+      )
+      .catch((e) => {
+        console.log(e.response.data);
+        return e.response.data;
       });
   };
 
@@ -128,7 +148,8 @@ export default function App() {
     } else if (data["result"] === "fail") {
       alert(data["msg"]);
     } else {
-      setCookie("accessToken", data.token);
+      setCookie("accessToken", data.access_token);
+      setCookie("refreshToken", data.refresh_token);
       alert("로그인에 성공하였습니다.");
       window.location.reload();
     }
@@ -142,7 +163,9 @@ export default function App() {
     if (getCookie("accessToken") === undefined) {
       alert("비로그인 상태입니다. ");
     } else {
+      requestLogout();
       removeCookie("accessToken");
+      removeCookie("refreshToken");
       alert("로그아웃에 성공하였습니다.");
       window.location.reload();
     }
@@ -186,6 +209,36 @@ export default function App() {
     });
   };
 
+  /*
+   * access/refresh Token이 있는지를 확인하기 위한 함수
+   */
+  const checkToken = async () => {
+    return await axios
+      .post(
+        "/api/auth/checkToken",
+        //"http://127.0.0.1:5000/api/auth/checkToken",
+        {},
+        {
+          "Content-Type": "application/json",
+        }
+      )
+      .then((response) => {
+        //console.log(response.data, response.data["access_token"]);
+        setisAccessTokenVerify(response.data.result);
+        setisRefreshTokenVerify(response.data.result);
+        if (
+          response.data["access_token"] !== null &&
+          response.data["access_token"] !== undefined
+        ) {
+          setCookie("accessToken", response.data.access_token);
+        }
+      })
+      .catch((e) => {
+        console.log(e.response.data);
+        return e.response.data;
+      });
+  };
+
   useEffect(() => {
     // componentdidmount나 constructor 용 hook - api call
     /*fetch("/users", { // fetch를 이용한 api call
@@ -203,6 +256,7 @@ export default function App() {
       .catch((err) => console.log(err));*/
     GetPointFromServer(); // axios를 이용한 api call
     //AddPointThroughServer(); // axios를 이용한 api call
+    checkToken();
   }, []);
 
   return (
@@ -265,6 +319,14 @@ export default function App() {
         {getCookie("accessToken") !== undefined
           ? "access token: " + getCookie("accessToken")
           : "No access token"}
+        <br />
+        {getCookie("refreshToken") !== undefined
+          ? "refresh token: " + getCookie("refreshToken")
+          : "No refresh token"}
+        <br />
+        {isAccessTokenVerify}
+        <br />
+        {isrefreshTokenVerify}
       </div>
     </div>
   );
