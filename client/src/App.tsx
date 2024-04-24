@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useLocation, useOutlet } from "react-router-dom";
+import { green } from "@mui/material/colors";
+import { ThemeProvider, createTheme } from "@mui/material";
+
+import BottomNav from "./components/BottomNav";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+import useAuthStore from "./store/AuthStore";
+import NavBar from "./components/NavBar";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: green[500],
+    },
+  },
+});
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const location = useLocation();
+  const currentOutlet = useOutlet();
+  const isAuth = useAuthStore((state) => state.isAuth);
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <ThemeProvider theme={theme}>
+      {/* 
+        transition group 을 통해 slide page transition 을 하고 싶지만 시간이 없었습니다, */}
+      {isAuth ? <NavBar /> : null}
+      <TransitionGroup className="transition-group">
+        <CSSTransition key={location.key} classNames="page-animation" timeout={0}>
+          {currentOutlet}
+        </CSSTransition>
+      </TransitionGroup>
+      {isAuth ? <BottomNav /> : null}
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;
