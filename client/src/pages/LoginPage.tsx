@@ -49,17 +49,28 @@ const textFieldStyle = css`
 `;
 
 export default function MainPage() {
+  const isAuth = useAuthStore((state) => state.isAuth);
+  
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
-  const [loginState, setLoginState] = useState(0);
+  const [loginState, setLoginState] = useState(200);
+  
   const navigate = useNavigate();
+
   const loginRequest = useAuthStore((state) => state.login);
-  const isAuth = useAuthStore((state) => state.isAuth);
 
   const handleLogin = async () => {
-    const response = await loginRequest(id, pw);
-    console.log(response.status);
-    setLoginState(response.status);
+    const res = await loginRequest(id, pw)
+    
+    if(res.status === 200) {
+      // setUser({
+      //   id,
+      //   nickname: "unknown",
+      //   region: "unknown"
+      // });
+    }
+
+    setLoginState(res.status);
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
@@ -67,8 +78,13 @@ export default function MainPage() {
       handleLogin();
     }
   };
-  console.log(`isAuth = ${isAuth}`);
-  return isAuth ? <Navigate replace to="/" /> : (
+
+  if(isAuth) {
+    return <Navigate replace to="/" />
+  }
+
+
+  return (
     <Box className={containerStyle} onKeyDown={handleKeyDown}>
       
       <Card
