@@ -12,66 +12,51 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PageContainer } from "../components/common/PageContainer";
 import PageCard from "../components/common/PageCard";
+import { useUserStore } from "@/store/UserStore";
+import { PointRecord } from "@/api/point";
 
 const cardStyle = css`
   margin:1rem;
 `
 
+interface Column {
+  id: "date" | "place" | "point";
+  label: string;
+  minWidth?: number;
+  align?: "right";
+  format?: (value: number) => string;
+}
+
+const columns: readonly Column[] = [
+  { id: "date", label: "일시" },
+  { id: "place", align: "right", label: "수거 장소" },
+  {
+    id: "point",
+    label: "획득 포인트",
+    align: "right",
+    format: (value: number) => value.toLocaleString("en-US"),
+  },
+];
+
 export default function PointPage() {
   const isAuth = useAuthStore((state) => state.isAuth);
+  const requestPoint = useUserStore(state => state.getPoint);
+
+  const [rows, setRows] = useState<PointRecord[]>([]);
+
+  useEffect(() => {
+    requestPoint(0, 5)
+    .then(records => {
+      setRows(records);
+    })
+  }, []);
 
   if (!isAuth) {
     return <Navigate replace to="/login" />;
   }
-
-  // view 구현용 데모 데이터 입니다. 실제 Data 는 비즈니스 로직과 함께 따로 구분할 예정입닏.ㅏ
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  interface Column {
-    id: "date" | "place" | "points";
-    label: string;
-    minWidth?: number;
-    align?: "right";
-    format?: (value: number) => string;
-  }
-
-  const columns: readonly Column[] = [
-    { id: "date", label: "일시" },
-    { id: "place", align: "right", label: "수거\u00a0장소" },
-    {
-      id: "points",
-      label: "획득 포인트",
-      align: "right",
-      format: (value: number) => value.toLocaleString("en-US"),
-    },
-  ];
-
-  const rows = [
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-    { date: new Date(), place: "대구 달서구", points: 100 },
-  ];
 
   return (
     <PageContainer>
@@ -109,7 +94,6 @@ export default function PointPage() {
             </TableHead>
             <TableBody>
               {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, idx) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={idx}>
@@ -117,9 +101,7 @@ export default function PointPage() {
                         const value = row[column.id];
                         return (
                           <TableCell key={column.id} align={column.align}>
-                            {typeof value === "object"
-                              ? `${value.getMonth() + 1}.${value.getDate()}`
-                              : value.toString()}
+                            {column.id == "date" ? `${new Date(value).getMonth() + 1}.${new Date(value).getDate()}` : value }
                           </TableCell>
                         );
                       })}
