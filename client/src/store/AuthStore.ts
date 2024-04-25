@@ -4,6 +4,7 @@ import {create} from 'zustand';
 import { checkToken, login, signUp } from "@/api";
 import { TOKEN_ACCESS_ID, TOKEN_REFRESH_ID, removeCookie, setCookie } from '@/common/cookie';
 import { AxiosResponse } from 'axios';
+import { useUserStore } from './UserStore';
 
 // 인터페이스 정의
 interface AuthState {
@@ -19,6 +20,8 @@ const initialState = {
   isAuth: false,
 };
 
+const setUser = useUserStore.getState().setUser;
+
 // Zustand 상태 생성
 const useAuthStore = create<AuthState>((set) => ({
   ...initialState,
@@ -32,7 +35,15 @@ const useAuthStore = create<AuthState>((set) => ({
       // for test
       console.log("로그인 성공?");
       set({isAuth:true});
+
       // set cookie for this user
+      
+      setUser({
+        id,
+        "nickname":"testNickname",
+        "region":"testRegion"
+      });
+
       setCookie(TOKEN_ACCESS_ID, res.data.access_token);
       setCookie(TOKEN_REFRESH_ID, res.data.refresh_token);
 
@@ -65,9 +76,14 @@ const useAuthStore = create<AuthState>((set) => ({
   },
 
   checkToken: async () => {
-    const res =await checkToken();
+    const res = await checkToken();
     if(res.data.result === "success") {
       console.log("토큰 확인 성공");
+      setUser({
+        "id":"testID",
+        "nickname":"testNickname",
+        "region":"testRegion"
+      });
       set({isAuth:true});
     }
     else {

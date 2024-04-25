@@ -5,6 +5,7 @@ import useAuthStore from "../store/AuthStore";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Avatar, Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
 import { PageContainer } from "../components/common/PageContainer";
+import { useUserStore } from "@/store/UserStore";
 
 const cardStyle = css`
   margin: 1rem;
@@ -34,6 +35,7 @@ const profileStyle = css`
 
 export default function MainPage() {
   const isAuth = useAuthStore((state) => state.isAuth);
+  const currentUser = useUserStore(state => state.currentUser);
   const navigate = useNavigate();
   if (!isAuth) {
     return <Navigate replace to="/login" />;
@@ -49,10 +51,10 @@ export default function MainPage() {
             sx={{ width: 128, height: 128, marginBottom:"32px"}}
           />
           <Typography variant="h2">
-            김민욱 님
+            {currentUser?.nickname} 님
           </Typography>
           <Typography variant="h3">
-            대구광역시 북구
+            {currentUser?.region}
           </Typography>
         </Box>
         

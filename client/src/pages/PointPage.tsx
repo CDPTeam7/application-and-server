@@ -93,8 +93,20 @@ export default function PointPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
-                .map((row, idx) => {
+              {
+                rows.length === 0 ? 
+                <TableRow>
+                  <TableCell>
+                    
+                  </TableCell>
+                  <TableCell align="right">
+                    최근 이력이 없습니다!
+                  </TableCell>
+                  <TableCell>
+
+                  </TableCell>
+                </TableRow>
+                : rows.map((row, idx) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={idx}>
                       {columns.map((column) => {
