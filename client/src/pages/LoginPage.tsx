@@ -8,6 +8,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Icon from "../components/common/Icon";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import { ErrorType, useErrorMessage } from "@/hooks/useErrorMessage";
 
 const buttonGroupStyle = css`
   margin-top: 3rem !important;
@@ -48,12 +49,50 @@ const textFieldStyle = css`
   width: -webkit-fill-available;
 `;
 
+interface FormState extends ErrorType {
+  SUCCESS:200,
+  PW_NOT_MATCH: 402,
+}
+
+const FORM_STATE:FormState = {
+  SUCCESS:200,
+  PW_NOT_MATCH: 402,
+  INITIAL: 0,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500
+}
+
+type FormObject = "id" | "password";
+
+const errorMessage:Record<keyof FormState, Record<FormObject, string>> = {
+  PW_NOT_MATCH: {
+    id: "",
+    password: "비밀번호가 일치하지 않습니다."
+  },
+  INITIAL: {
+    id: "",
+    password: ""
+  },
+  NOT_FOUND: {
+    id: "",
+    password: ""
+  },
+  INTERNAL_SERVER_ERROR: {
+    id: "",
+    password: ""
+  },
+  SUCCESS: {
+    id: "",
+    password: ""
+  }
+}
+
 export default function MainPage() {
   const isAuth = useAuthStore((state) => state.isAuth);
   
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
-  const [loginState, setLoginState] = useState(200);
+  const {errorState, errorText, setErrorState} = useErrorMessage<FormState, FormObject>(errorMessage);
   
   const navigate = useNavigate();
 
@@ -68,9 +107,11 @@ export default function MainPage() {
       //   nickname: "unknown",
       //   region: "unknown"
       // });
+      setErrorState("SUCCESS");
     }
-
-    setLoginState(res.status);
+    if(res.status === 401) {
+      setErrorState("PW_NOT_MATCH");
+    }
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
@@ -105,7 +146,8 @@ export default function MainPage() {
           에코스에 로그인하고 다양한 혜택을 누려보아요.
         </Typography>
         <TextField
-          // title={"아이디"}
+          error={errorText.id.length !== 0}
+          helperText={errorText.id}
           label="아이디"
           variant="outlined"
           name={"id"}
@@ -115,7 +157,8 @@ export default function MainPage() {
           onChange={(e) => setId(e.target.value)}
         />
         <TextField
-          // title={"비밀번호"}\
+          error={errorText.password.length !== 0}
+          helperText={errorText.password}
           variant="outlined"
           label="비밀번호"
           type="password"
