@@ -31,12 +31,12 @@ export const tabBarRoutes = [
     label: "홈",
   },
   {
-    path: "/ranks",
+    path: "/ranking",
     icon: <StackedLineChartIcon />,
     label: "순위",
   },
   {
-    path: "/points",
+    path: "/point",
     icon: <AttachMoneyIcon />,
     label: "포인트",
   },

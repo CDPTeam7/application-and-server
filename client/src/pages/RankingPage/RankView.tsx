@@ -64,7 +64,7 @@ export default function RankPage() {
             secondaryAction={123}
           >
             <ListItemAvatar>1</ListItemAvatar>
-            <ListItemText primary={`낭만 대구`} />
+            <ListItemText primary={`대구`} />
           </ListItem>
         </Box>
         <Divider sx={{ marginBottom: "16px" }}/>
