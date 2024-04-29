@@ -9,6 +9,7 @@ import Icon from "../components/common/Icon";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { ErrorType, useErrorMessage } from "@/hooks/useErrorMessage";
+import { AxiosError } from "axios";
 
 const buttonGroupStyle = css`
   margin-top: 3rem !important;
@@ -51,12 +52,12 @@ const textFieldStyle = css`
 
 interface FormState extends ErrorType {
   SUCCESS:200,
-  PW_NOT_MATCH: 402,
+  PW_NOT_MATCH: 401,
 }
 
 const FORM_STATE:FormState = {
   SUCCESS:200,
-  PW_NOT_MATCH: 402,
+  PW_NOT_MATCH: 401,
   INITIAL: 0,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500
@@ -89,28 +90,27 @@ const errorMessage:Record<keyof FormState, Record<FormObject, string>> = {
 
 export default function MainPage() {
   const isAuth = useAuthStore((state) => state.isAuth);
+  const loginRequest = useAuthStore((state) => state.login);
   
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
+
   const {errorState, errorText, setErrorState} = useErrorMessage<FormState, FormObject>(errorMessage);
-  
+
   const navigate = useNavigate();
 
-  const loginRequest = useAuthStore((state) => state.login);
-
   const handleLogin = async () => {
-    const res = await loginRequest(id, pw)
-    
-    if(res.status === 200) {
-      // setUser({
-      //   id,
-      //   nickname: "unknown",
-      //   region: "unknown"
-      // });
+    try {
+      const res = await loginRequest(id, pw);
       setErrorState("SUCCESS");
     }
-    if(res.status === 401) {
-      setErrorState("PW_NOT_MATCH");
+    catch (err) {
+      console.log(err);
+      const axiosErr = (err as AxiosError);
+      if(axiosErr.response?.status === FORM_STATE.PW_NOT_MATCH) {
+        console.log("TEST");
+        setErrorState("PW_NOT_MATCH");
+      }
     }
   };
 

@@ -9,6 +9,8 @@ import Icon from "@/components/common/Icon";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { ErrorType, useErrorMessage } from "@/hooks/useErrorMessage";
+import { AxiosError } from "axios";
+import SignupFinish from "./SignupFinish";
 
 const buttonGroupStyle = css`
   margin-top: 3rem !important;
@@ -121,16 +123,20 @@ export default function SignupPage() {
     
     console.log("request start");
 
-    const response = await requestSignUp(id, pw);
-    
-    console.log(response);
-
-    if(response.status === FORM_STATE.ERROR_ID_EXIST) {
-      setErrorState("ERROR_ID_EXIST");
+    try {
+      const response = await requestSignUp(id, pw);
+      setErrorState("SUCCESS");
     }
-    
-    if(response.status === FORM_STATE.INTERNAL_SERVER_ERROR) {
-      console.error("서버 측 에러가 발생했습니다.");
+    catch (err) {
+      const response = (err as AxiosError).response;
+
+      if(response?.status === FORM_STATE.ERROR_ID_EXIST) {
+        setErrorState("ERROR_ID_EXIST");
+      }
+      
+      if(response?.status === FORM_STATE.INTERNAL_SERVER_ERROR) {
+        console.error("서버 측 에러가 발생했습니다.");
+      }
     }
   };
 
@@ -145,7 +151,7 @@ export default function SignupPage() {
   }
 
   if(errorState === "SUCCESS") {
-    return <SignupPage />
+    return <SignupFinish />
   }
 
   return (
