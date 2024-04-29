@@ -8,18 +8,17 @@ import Paper from "@mui/material/Paper";
 import { stringifyNumber } from "../../utility";
 
 function createData(
-  rank: number,
   areaName: string,
   point: number,
   derivation: number
 ) {
-  return { rank, areaName, point, derivation };
+  return { areaName, point, derivation };
 }
 
 const rows = [
-  createData(1, "그냥 대구", 12123123, 10),
-  createData(1, "낭만 대구", 12123123, 10),
-  createData(1, "낭만없는 대구", 12123123, -10),
+  createData("대구", 12123123, 10),
+  createData("서울", 12123123, 10),
+  createData("대전", 12123123, -10),
 ];
 
 export default function BasicTable() {
@@ -34,13 +33,13 @@ export default function BasicTable() {
           </TableRow>
         </TableHead> */}
         <TableBody>
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <TableRow
               key={row.areaName}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.rank}
+                {index + 1}
               </TableCell>
               <TableCell align="right">{row.areaName}</TableCell>
               <TableCell

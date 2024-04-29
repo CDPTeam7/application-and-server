@@ -25,13 +25,13 @@ const cardStyle = css`
 interface Column {
   id: "date" | "place" | "point";
   label: string;
-  minWidth?: number;
+  maxWidth?: number;
   align?: "right";
   format?: (value: number) => string;
 }
 
 const columns: readonly Column[] = [
-  { id: "date", label: "일시" },
+  { id: "date", label: "일시", align:"right", maxWidth:50},
   { id: "place", align: "right", label: "수거 장소" },
   {
     id: "point",
@@ -43,13 +43,14 @@ const columns: readonly Column[] = [
 
 export default function PointPage() {
   const isAuth = useAuthStore((state) => state.isAuth);
-  const requestPoint = useUserStore(state => state.getPoint);
+  const requestPoint = useUserStore(state => state.requestPointByCount);
 
   const [rows, setRows] = useState<PointRecord[]>([]);
 
   useEffect(() => {
-    requestPoint(0, 5)
+    requestPoint(0, 10)
     .then(records => {
+      console.log(records);
       setRows(records);
     })
   }, []);
@@ -72,7 +73,7 @@ export default function PointPage() {
               <span
                 style={{ color: ThemeSheet.Branded[400], fontSize: "1.4rem" }}
               >
-                {1000}
+                {rows[0]?.afterTotal}
               </span>{" "}
               원
         </Typography>
@@ -85,7 +86,6 @@ export default function PointPage() {
                   <TableCell
                     key={column.id}
                     align={column.align}
-                    style={{ minWidth: column.minWidth }}
                   >
                     {column.label}
                   </TableCell>
@@ -113,7 +113,7 @@ export default function PointPage() {
                         const value = row[column.id];
                         return (
                           <TableCell key={column.id} align={column.align}>
-                            {column.id == "date" ? `${new Date(value).getMonth() + 1}.${new Date(value).getDate()}` : value }
+                            {column.id == "date" ? `${new Date(value).getFullYear()}. ${new Date(value).getMonth() + 1}.${new Date(value).getDate() }` : value }
                           </TableCell>
                         );
                       })}

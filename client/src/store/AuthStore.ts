@@ -80,11 +80,11 @@ const useAuthStore = create<AuthState>((set) => ({
     if(res.data.result === "success") {
       console.log("토큰 확인 성공");
       setUser({
-        "id":"testID",
-        "nickname":"testNickname",
-        "region":"testRegion"
+        "id":"admin",
+        "nickname":"admin",
+        "region":res.data.result.region ?? "undefined",
       });
-      set({isAuth:true});
+      set({isAuth:true}); 
     }
     else {
       console.log("토큰 확인 실패");

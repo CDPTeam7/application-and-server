@@ -6,6 +6,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { Avatar, Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
 import { PageContainer } from "../components/common/PageContainer";
 import { useUserStore } from "@/store/UserStore";
+import { useEffect, useState } from "react";
 
 const cardStyle = css`
   margin: 1rem;
@@ -36,7 +37,16 @@ const profileStyle = css`
 export default function MainPage() {
   const isAuth = useAuthStore((state) => state.isAuth);
   const currentUser = useUserStore(state => state.currentUser);
+  const getPoint = useUserStore(state => state.getPoint);
   const navigate = useNavigate();
+  const [point, setPoint] = useState(0);
+
+  useEffect(() => {
+    getPoint().then((value) => {
+      setPoint(value);
+    });
+  }, []);
+
   if (!isAuth) {
     return <Navigate replace to="/login" />;
   }
@@ -109,14 +119,14 @@ export default function MainPage() {
                       fontSize: "1.4rem",
                     }}
                   >
-                    {1000}
+                    {point}
                   </span>
                   원
               </Typography>
             </Box>
           </CardContent>
           <CardActions>
-            <Button onClick={() => navigate("points")}>더보기</Button>
+            <Button onClick={() => navigate("point")}>더보기</Button>
           </CardActions>
         </Card>
         <Card
@@ -150,7 +160,7 @@ export default function MainPage() {
             </Box>
           </CardContent>
           <CardActions>
-            <Button onClick={() => navigate("ranks")}>더보기</Button>
+            <Button onClick={() => navigate("ranking")}>더보기</Button>
           </CardActions>
         </Card>
       </PageContainer>
