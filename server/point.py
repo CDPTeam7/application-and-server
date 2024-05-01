@@ -5,6 +5,7 @@ from pymongo import ReturnDocument
 from database import db
 from tokens import *
 import datetime
+import time
 
 # 전처리
 Point = Namespace(
@@ -191,11 +192,29 @@ class add_point(Resource):
                 return_document=ReturnDocument.AFTER,
             )
             # 데이터를 처리하고 응답 생성
+            if result is None:
+                response_data = {
+                    "result": "fail",
+                    "msg": "포인트 적립에 실패하였습니다.",
+                }
+                return make_response(jsonify(response_data), 401)
             response_data = {
                 "result": "success",
                 "msg": "포인트 적립에 성공하였습니다.",
                 "data": result,
             }
+            db.history.update_one(
+                {"user_id": id_receive},
+                {
+                    "$push": {
+                        "point_history": {
+                            "date": datetime.datetime.now(),
+                            "point": point_receive,
+                            "after_total": result["point"],
+                        }
+                    }
+                },
+            )
             return make_response(jsonify(response_data), 202)
         except:
             response_data = {"result": "fail", "msg": "포인트 적립에 실패하였습니다."}
@@ -252,11 +271,29 @@ class add_point_using_id(Resource):
                 return_document=ReturnDocument.AFTER,
             )
             # 데이터를 처리하고 응답 생성
+            if result is None:
+                response_data = {
+                    "result": "fail",
+                    "msg": "포인트 적립에 실패하였습니다.",
+                }
+                return make_response(jsonify(response_data), 401)
             response_data = {
                 "result": "success",
                 "msg": "포인트 적립에 성공하였습니다.",
                 "data": result,
             }
+            db.history.update_one(
+                {"user_id": id_receive},
+                {
+                    "$push": {
+                        "point_history": {
+                            "date": datetime.datetime.now(),
+                            "point": point_receive,
+                            "after_total": result["point"],
+                        }
+                    }
+                },
+            )
             return make_response(jsonify(response_data), 202)
         except:
             response_data = {"result": "fail", "msg": "포인트 적립에 실패하였습니다."}
