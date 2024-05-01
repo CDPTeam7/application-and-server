@@ -13,14 +13,10 @@ Point = Namespace(
 )
 
 
-point_check_fields = Point.model(
+"""point_check_fields = Point.model(
     "Point_check_request",
-    {  # Model 객체 생성
-        "access_token": fields.String(
-            description="an access token", required=True, example="access_token"
-        )
-    },
-)
+    {},
+)"""
 point_check_response1_data = Point.model(
     "Point_check_response1_data", {"point": fields.Integer(example=30)}
 )
@@ -41,7 +37,6 @@ point_check_response2 = Point.model(
 )
 point_check_response3 = Point.model(
     "Point_check_fail2",
-    point_check_response2,
     {
         "result": fields.String(example="fail"),
         "msg": fields.String(example="access token이 유효하지 않습니다."),
@@ -50,18 +45,17 @@ point_check_response3 = Point.model(
 
 
 # point check API call route
-@Point.route("/check", methods=["POST"])
+@Point.route("/check", methods=["GET"])
 class check_point(Resource):
-    @Point.expect(point_check_fields)
+    # @Point.expect(point_check_fields)
     @Point.response(202, "success", point_check_response1)
     @Point.response(401, "fail", point_check_response2)
     @Point.response(402, "fail", point_check_response3)
-    def post(self):
+    @token_required
+    def get(self):
         """현재 포인트를 얼마나 가지고 있는지를 확인합니다 - token 사용"""
-        req = request.get_json()
-        token_receive = req["access_token"]
-        payload = check_access_token(token_receive)
-        if payload == None:
+        payload = get_payload_from_header()
+        if payload is None:
             return make_response(
                 jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
                 402,
@@ -109,7 +103,7 @@ point_check_using_id_response2 = Point.inherit(
 
 
 # point check API call route
-@Point.route("/checkUsingId", methods=["POST"])
+@Point.route("/check-use-id", methods=["POST"])
 class check_point_using_id(Resource):
     @Point.expect(point_check_using_id_fields)
     @Point.response(202, "success", point_check_using_id_response1)
@@ -212,6 +206,9 @@ point_add_using_id_fields = Point.inherit(
     "Point_add_using_id_request",
     point_check_using_id_fields,
     {  # Model 객체 생성
+        "access_token": fields.String(
+            description="an access token", required=True, example="access token"
+        ),
         "point": fields.Integer(description="a point", required=True, example=20),
     },
 )
@@ -236,7 +233,7 @@ point_add_using_id_response2 = Point.inherit(
 
 
 # point add API call route
-@Point.route("/addUsingId", methods=["POST"])
+@Point.route("/add-use-id", methods=["POST"])
 class add_point_using_id(Resource):
     @Point.expect(point_add_using_id_fields)
     @Point.response(202, "success", point_add_using_id_response1)
@@ -269,15 +266,10 @@ class add_point_using_id(Resource):
 history_interval_fields_fromto = Point.model(
     "History_interval_request_fromto",
     {
-        "year": fields.Integer(description="Year", required=True),
-        "month": fields.Integer(description="Month", required=True),
-        "day": fields.Integer(description="day", required=True),
-        "hour": fields.Integer(description="Hour", required=True),
-        "minute": fields.Integer(description="Minute", required=True),
-        "second": fields.Integer(description="Second", required=True),
+        "timestamp": fields.Integer(description="timestamp", required=True),
     },
 )
-history_interval_fields_from_data = {
+"""history_interval_fields_from_data = {
     "year": 2017,
     "month": 5,
     "day": 10,
@@ -292,18 +284,15 @@ history_interval_fields_to_data = {
     "hour": 10,
     "minute": 0,
     "second": 0,
-}
+}"""
 history_interval_fields = Point.model(
     "History_interval_request",
     {  # Model 객체 생성
-        "access_token": fields.String(
-            description="an access token", required=True, example="access_token"
+        "from": fields.Integer(
+            description="from timestamp", required=True, example=1701069339870
         ),
-        "from": fields.Nested(
-            history_interval_fields_fromto, default=history_interval_fields_from_data
-        ),
-        "to": fields.Nested(
-            history_interval_fields_fromto, default=history_interval_fields_to_data
+        "to": fields.Integer(
+            description="to timestamp", required=True, example=1714407851710
         ),
     },
 )
@@ -317,9 +306,9 @@ history_interval_response1_data = Point.model(
 )
 history_interval_response1_example = [
     {
-        "after_total": 180,
-        "date": datetime.datetime(2017, 5, 13, 12, 0).isoformat(),
-        "point": 50,
+        "after_total": 210,
+        "date": datetime.datetime(2024, 1, 3, 13, 0).isoformat(),
+        "point": 10,
     },
     {
         "after_total": 200,
@@ -327,9 +316,9 @@ history_interval_response1_example = [
         "point": 20,
     },
     {
-        "after_total": 210,
-        "date": datetime.datetime(2024, 1, 3, 13, 0).isoformat(),
-        "point": 10,
+        "after_total": 180,
+        "date": datetime.datetime(2017, 5, 13, 12, 0).isoformat(),
+        "point": 50,
     },
 ]
 history_interval_response1 = Point.inherit(
@@ -366,13 +355,13 @@ class interval_history(Resource):
     @Point.response(202, "success", history_interval_response1)
     @Point.response(401, "fail", history_interval_response2)
     @Point.response(402, "fail", history_interval_response3)
+    @token_required
     def post(self):
         """요청한 날짜 사이에 대한 포인트 내역을 확인합니다 - token 사용"""
         req = request.get_json()
-        token_receive = req["access_token"]
         from_receive = req["from"]
         to_receive = req["to"]
-        payload = check_access_token(token_receive)
+        payload = get_payload_from_header()
         if payload == None:
             return make_response(
                 jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
@@ -380,7 +369,6 @@ class interval_history(Resource):
             )
         try:
             id_receive = payload["id"]
-            # find one and update 쿼리 실행: request의 name과 동일한 document에서 score 속성 값을 기존 값에서 request의 score 값만큼 증가(inc), 업데이트 이후에 값을 return
             pipeline = [
                 {"$match": {"user_id": id_receive}},
                 {
@@ -389,33 +377,23 @@ class interval_history(Resource):
                         "user_id": 1,
                         "point_history": {
                             "$filter": {
-                                "input": "$point_history",
+                                "input": {"$reverseArray": "$point_history"},
                                 "as": "point",
                                 "cond": {
                                     "$and": [
                                         {
                                             "$gte": [
                                                 "$$point.date",
-                                                datetime.datetime(
-                                                    from_receive["year"],
-                                                    from_receive["month"],
-                                                    from_receive["day"],
-                                                    from_receive["hour"],
-                                                    from_receive["minute"],
-                                                    from_receive["second"],
+                                                datetime.datetime.fromtimestamp(
+                                                    from_receive / 1e3
                                                 ),
                                             ]
                                         },
                                         {
                                             "$lte": [
                                                 "$$point.date",
-                                                datetime.datetime(
-                                                    to_receive["year"],
-                                                    to_receive["month"],
-                                                    to_receive["day"],
-                                                    to_receive["hour"],
-                                                    to_receive["minute"],
-                                                    to_receive["second"],
+                                                datetime.datetime.fromtimestamp(
+                                                    to_receive / 1e3
                                                 ),
                                             ]
                                         },
@@ -447,9 +425,6 @@ class interval_history(Resource):
 history_count_fields = Point.model(
     "History_count_request",
     {  # Model 객체 생성
-        "access_token": fields.String(
-            description="an access token", required=True, example="access_token"
-        ),
         "from": fields.Integer(description="from index", required=True, example=3),
         "count": fields.Integer(description="to count", required=True, example=4),
     },
@@ -464,8 +439,13 @@ history_count_response1_data = Point.model(
 )
 history_count_response1_example = [
     {
-        "after_total": 120,
-        "date": datetime.datetime(2016, 2, 20, 18, 0).isoformat(),
+        "after_total": 200,
+        "date": datetime.datetime(2020, 12, 31, 15, 0).isoformat(),
+        "point": 20,
+    },
+    {
+        "after_total": 180,
+        "date": datetime.datetime(2017, 5, 13, 12, 0).isoformat(),
         "point": 50,
     },
     {
@@ -474,14 +454,9 @@ history_count_response1_example = [
         "point": 10,
     },
     {
-        "after_total": 180,
-        "date": datetime.datetime(2017, 5, 13, 12, 0).isoformat(),
+        "after_total": 120,
+        "date": datetime.datetime(2016, 2, 20, 18, 0).isoformat(),
         "point": 50,
-    },
-    {
-        "after_total": 200,
-        "date": datetime.datetime(2020, 12, 31, 15, 0).isoformat(),
-        "point": 20,
     },
 ]
 history_count_response1 = Point.inherit(
@@ -518,13 +493,13 @@ class count_history(Resource):
     @Point.response(202, "success", history_count_response1)
     @Point.response(401, "fail", history_count_response2)
     @Point.response(402, "fail", history_count_response3)
+    @token_required
     def post(self):
         """요청한 위치부터 개수만큼 포인트 내역을 확인합니다 - token 사용"""
         req = request.get_json()
-        token_receive = req["access_token"]
         from_receive = req["from"]
         count_receive = req["count"]
-        payload = check_access_token(token_receive)
+        payload = get_payload_from_header()
         if payload == None:
             return make_response(
                 jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
@@ -532,7 +507,6 @@ class count_history(Resource):
             )
         try:
             id_receive = payload["id"]
-            # find one and update 쿼리 실행: request의 name과 동일한 document에서 score 속성 값을 기존 값에서 request의 score 값만큼 증가(inc), 업데이트 이후에 값을 return
             pipeline = [
                 {"$match": {"user_id": id_receive}},
                 {
@@ -540,7 +514,11 @@ class count_history(Resource):
                         "_id": 0,
                         "user_id": 1,
                         "point_history": {
-                            "$slice": ["$point_history", from_receive, count_receive]
+                            "$slice": [
+                                {"$reverseArray": "$point_history"},
+                                from_receive,
+                                count_receive,
+                            ]
                         },
                     }
                 },
