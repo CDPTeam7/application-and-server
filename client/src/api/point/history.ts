@@ -1,11 +1,11 @@
-import { axiosWithCookie } from "@/common/axios";
-import { TOKEN_ACCESS_ID, getCookie } from "@/common/cookie";
+import { axiosWithCookie } from "@/utils/axios";
+import { TOKEN_ACCESS_ID, getCookie } from "@/utils/cookie";
 
 export interface PointRecord {
-  afterTotal:number,
-  place:string,
-  date:string,
-  point:number
+  afterTotal: number;
+  place: string;
+  date: string;
+  point: number;
 }
 
 /**
@@ -13,11 +13,11 @@ export interface PointRecord {
  * @param from point 배열의 index
  * @param recordCount 가져올 point record의 개수
  */
-export function count(from:number, recordCount:number) {
+export function requestPointByCount(from: number, recordCount: number) {
   return axiosWithCookie.post("/api/point/history/count", {
     access_token: getCookie(TOKEN_ACCESS_ID),
     from,
-    count:recordCount
+    count: recordCount,
   });
 }
 
