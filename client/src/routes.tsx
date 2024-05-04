@@ -1,80 +1,58 @@
-import MainPage from "./pages/MainPage";
-import LoginPage from "./pages/LoginPage";
-import { createRef } from "react";
-import SignupPage from "./pages/SignupPage";
-import RankingPage from "./pages/RankingPage";
-import { Navigate, createBrowserRouter } from "react-router-dom";
+import { MainPage, LoginPage, SignupPage, ProfilePage } from "@/pages";
+import RankingPage from "./pages/Ranking";
+import { RouteObject, createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import ProfilePage from "./pages/ProfilePage";
-import NotificationsPage from "./pages/NotificationsPage";
-import PointPage from "./pages/PointPage";
+import NotificationsPage from "./pages/Notification/NotificationPage";
+import PointPage from "./pages/Point/PointPage";
+import ProfileEdit from "./pages/Profile/ProfileEdit";
 
-export interface TransitionRoute {
-  path: string,
-  name: string,
-  element: React.ReactNode,
-  nodeRef: React.RefObject<unknown>
-}
-
-export const routes:TransitionRoute[] = [
+export const routes: RouteObject[] = [
   {
+    id: "홈",
     path: "/",
-    name: "Home",
     element: <MainPage />,
-    nodeRef:createRef(),
   },
   {
+    id: "로그인",
     path: "/login",
-    name: "Login",
     element: <LoginPage />,
-    nodeRef:createRef(),
   },
   {
-    path:"/signup",
-    name:"Sign up",
-    element:<SignupPage />,
-    nodeRef:createRef(),
+    id: "회원가입",
+    path: "/signup",
+    element: <SignupPage />,
   },
   {
+    id: "프로필",
     path: "/profile",
-    name: "Profile",
     element: <ProfilePage />,
-    nodeRef:createRef(),
   },
   {
+    id: "프로필 수정",
+    path: "/profile/edit",
+    element: <ProfileEdit />,
+  },
+  {
+    id: "알림",
     path: "/notifications",
-    name: "Notifications",
     element: <NotificationsPage />,
-    nodeRef:createRef(),
   },
   {
+    id: "포인트",
     path: "/point",
-    name: "Points",
     element: <PointPage />,
-    nodeRef:createRef(),
   },
   {
-    path: "/ranking",
-    name: "Ranks",
+    id: "순위",
+    path: "/ranking?/:ID",
     element: <RankingPage />,
-    nodeRef: createRef(),
-  },
-  {
-    path: "*",
-    element: <Navigate replace to="/" />,
-    name: "",
-    nodeRef: createRef(),
   },
 ];
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
-    children: routes.map((route) => ({
-      index: route.path === '/',
-      path: route.path === '/' ? undefined : route.path,
-      element: route.element,
-    })),
+    children: routes,
   },
-])
+]);
