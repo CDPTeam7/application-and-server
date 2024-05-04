@@ -1,13 +1,6 @@
 import { css } from "@linaria/core";
-import {
-  Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Paper,
-} from "@mui/material";
-import { getCityList, getDistrictList } from "../../models/CityModel";
+import { Grid, List, ListItem, ListItemButton, ListItemText, Paper } from "@mui/material";
+import { getCityList, getDistrictList } from "../../models/RegionModel";
 import { useState } from "react";
 import { ThemeSheet } from "../../theme/ThemeSheet";
 
@@ -53,10 +46,7 @@ export default function AreaSelect() {
           {cityList.map((value, index) => {
             return (
               <ListItem key={index} component="div" disablePadding>
-                <ListItemButton
-                  selected={value === city}
-                  onClick={() => handleCityClick(value)}
-                >
+                <ListItemButton selected={value === city} onClick={() => handleCityClick(value)}>
                   <ListItemText primary={value} />
                 </ListItemButton>
               </ListItem>
@@ -77,14 +67,9 @@ export default function AreaSelect() {
           >
             {districtList.map((value, index) => {
               return (
-                <ListItem
-                  key={index}
-                  component="div"
-                  disablePadding
-                  secondaryAction={123}
-                >
+                <ListItem key={index} component="div" disablePadding secondaryAction={123}>
                   <ListItemButton>
-                    <ListItemText primary={value} secondary={"100점"}/>
+                    <ListItemText primary={value} secondary={"100점"} />
                   </ListItemButton>
                 </ListItem>
               );

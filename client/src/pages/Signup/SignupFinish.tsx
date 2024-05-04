@@ -19,7 +19,7 @@ const buttonGroupStyle = css`
 const containerStyle = css`
   vertical-align: middle;
   min-width: 100vw;
-  overflow:hidden;
+  overflow: hidden;
   height: 100vh;
   display: table-cell;
 `;
@@ -27,12 +27,12 @@ const containerStyle = css`
 const cardStyle = css`
   & > :not(style) {
     margin: 16px;
-    box-sizing : border-box;
+    box-sizing: border-box;
   }
   margin: 16px;
-  border-radius:24px !important;
-  border:none !important;
-  box-shadow:0px 2px 4px 2px #0000000f;
+  border-radius: 24px !important;
+  border: none !important;
+  box-shadow: 0px 2px 4px 2px #0000000f;
 `;
 
 const iconStyle = css`
@@ -44,23 +44,17 @@ export default function SignupFinish() {
   const navigate = useNavigate();
   return (
     <Box className={containerStyle}>
-      <Card
-        component="form"
-        variant="outlined"
-        className={cardStyle}
-      >
+      <Card component="form" variant="outlined" className={cardStyle}>
         <CardContent
           sx={{
             "& > :not(style)": { m: 1, boxSizing: "border-box" },
           }}
         >
-          <Box sx={{display:"flex", alignItems:"center", flexDirection:"column",marginBottom:"64px !important"}}>
-            <Icon className={iconStyle}/>
+          <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column", marginBottom: "64px !important" }}>
+            <Icon className={iconStyle} />
           </Box>
           <Typography variant="h4">회원가입 완료</Typography>
-          <Typography variant="subtitle1">
-            로그인 화면으로 돌아가서 다시 로그인하세요.
-          </Typography>
+          <Typography variant="subtitle1">로그인 화면으로 돌아가서 다시 로그인하세요.</Typography>
           <div className={buttonGroupStyle}>
             <Button variant="outlined" onClick={() => navigate("/login")}>
               돌아가기
