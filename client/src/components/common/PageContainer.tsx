@@ -9,9 +9,22 @@ export interface PageContainerProps {
 }
 
 const containerStyle = css`
-  margin-top:calc(56px + 3rem);
+  @keyframes show-up {
+    0% {
+      opacity:0.2;
+      left:30px;
+    }
+    100% {
+      opacity:1;
+      left:0;
+    }
+  }
+  position:relative;
+  padding-top:72px;
+  margin-top: 0;
   min-width: 100vw;
   padding-bottom:56px;
+  animation:show-up 200ms ease;
 `
 
 export const PageContainer = (props:PageContainerProps) => {

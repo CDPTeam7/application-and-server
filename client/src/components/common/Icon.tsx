@@ -1,4 +1,4 @@
-import BrandLogo from "/BrandLogo.png";
+import BrandLogo from "/title.svg";
 
 export interface IconProps {
   className?:string,
