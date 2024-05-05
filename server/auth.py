@@ -162,7 +162,7 @@ class api_login(Resource):
 
             # 찾으면 JWT 토큰을 만들어 발급
             if result is not None:
-                if result["user_pw"] is not pw_hash:
+                if result["user_pw"] != pw_hash:
                     return make_response(
                         jsonify(
                             {"result": "fail", "msg": "비밀번호가 일치하지 않습니다."}
