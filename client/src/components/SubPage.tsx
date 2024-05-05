@@ -12,12 +12,13 @@ const cardStyle = css`
 interface SubPageProps {
   title: string;
   children?: React.ReactNode;
+  className?: string;
 }
 
 export default function SubPage(props: SubPageProps) {
   return (
     <PageContainer>
-      <PageCard className={cardStyle}>
+      <PageCard className={`${cardStyle} ${props.className}`}>
         <Typography variant="h1" sx={{ marginBottom: "24px" }}>
           {props.title}
         </Typography>

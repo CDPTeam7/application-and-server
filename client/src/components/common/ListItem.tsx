@@ -16,9 +16,9 @@ const wrapStyle = css`
     flex: 1;
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
   & .content .article {
-    width: 100px;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -40,6 +40,7 @@ interface ListItemProps {
   description?: string;
   value: string;
   valueClass?: string;
+  className?: string;
 }
 
 /**
@@ -47,8 +48,8 @@ interface ListItemProps {
  */
 export default function ListItem(props: ListItemProps) {
   return (
-    <div className={wrapStyle}>
-      <div className="date">{props.date ? `${props.date.getUTCMonth() + 1}.${props.date.getUTCDay()}` : null}</div>
+    <div className={`${wrapStyle} ${props.className}`}>
+      <div className="date">{props.date ? `${props.date.getMonth() + 1}.${props.date.getDate()}` : null}</div>
       <div className="content">
         <div className="article">
           <div className="title">{props.title}</div>
