@@ -2,18 +2,14 @@
 from flask import request, jsonify, make_response  # flask 관련 라이브러리
 from flask import send_file
 from flask_restx import Resource, Namespace, fields  # Api 구현을 위한 Api 객체 import
-import hashlib  # 비밀번호 암호화를 위한 모듈
 from tokens import *
 from database import db
 import os
 from dotenv import load_dotenv
 from PIL import Image
-import json
-from io import BytesIO
-import base64
-from deepface import DeepFace
 import cv2
 from werkzeug.utils import secure_filename
+from detection import *
 
 # 전처리
 Image = Namespace(
@@ -30,34 +26,6 @@ JWT_ALGORITHMS = os.environ.get("JWT_ALGORITHMS")
 SECRET_KEY = "b_4(!id8ro!1645n@ub55555hbu93gaia0"  # 테스트용 secret key
 JWT_ALGORITHM = "HS256"  # 암호화할 때 쓸 알고리즘
 """
-
-
-# target image의 embedding 정보 얻기
-def get_target_embedding(target_img_path):
-    try:
-        facial_representations = DeepFace.represent(
-            img_path=target_img_path,
-            model_name="Facenet512",
-            enforce_detection=True,
-            detector_backend="fastmtcnn",
-        )
-        # print(facial_representations)
-        if len(facial_representations) == 1:
-            target_embedding = facial_representations[0]["embedding"]
-        else:
-            biggest_face = facial_representations[0]
-            for face in facial_representations:
-                face_area = face["facial_area"]["w"] * face["facial_area"]["h"]
-                if face_area > (
-                    biggest_face["facial_area"]["w"] * biggest_face["facial_area"]["h"]
-                ):
-                    biggest_face = face
-            target_embedding = biggest_face["embedding"]
-
-        return target_embedding
-    except Exception as e:
-        print(e)
-        return None
 
 
 """get_image_fields = Image.model(
