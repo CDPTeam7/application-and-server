@@ -1,7 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { css } from "@linaria/core";
 import { useNavigate } from "react-router-dom";
-import Icon from "@/components/common/Icon";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
@@ -35,11 +34,6 @@ const cardStyle = css`
   box-shadow: 0px 2px 4px 2px #0000000f;
 `;
 
-const iconStyle = css`
-  margin: 0 auto;
-  display: block;
-`;
-
 export default function SignupFinish() {
   const navigate = useNavigate();
   return (
@@ -50,9 +44,7 @@ export default function SignupFinish() {
             "& > :not(style)": { m: 1, boxSizing: "border-box" },
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column", marginBottom: "64px !important" }}>
-            <Icon className={iconStyle} />
-          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column", marginBottom: "64px !important" }}></Box>
           <Typography variant="h4">회원가입 완료</Typography>
           <Typography variant="subtitle1">로그인 화면으로 돌아가서 다시 로그인하세요.</Typography>
           <div className={buttonGroupStyle}>
