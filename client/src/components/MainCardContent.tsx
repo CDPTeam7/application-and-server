@@ -5,6 +5,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { css } from "@linaria/core";
 import { ThemeSheet } from "@/theme/ThemeSheet";
+import { useNavigate } from "react-router-dom";
 
 type CardType = "protection" | "myProfile" | "challenge";
 
@@ -80,6 +81,7 @@ function ProtectionContent() {
 }
 
 function MyProfileContent() {
+  const navigate = useNavigate();
   const myProfileStyle = css`
     display: flex;
     align-items: center;
@@ -110,7 +112,7 @@ function MyProfileContent() {
           </div>
         </div>
 
-        <Button>
+        <Button onClick={() => navigate("/profile")}>
           <ArrowForwardIosIcon />
         </Button>
       </div>
