@@ -86,7 +86,7 @@ def token_required(func):
                     return make_response(
                         jsonify(
                             {
-                                "result": "fail",
+                                "result": "ERROR_TOKEN_NOT_EXIST",
                                 "msg": "access token, refresh token이 없습니다.",
                             }
                         ),
@@ -96,7 +96,7 @@ def token_required(func):
                 return make_response(
                     jsonify(
                         {
-                            "result": "fail",
+                            "result": "ERROR_TOKEN_NOT_EXIST",
                             "msg": "access token, refresh token이 없습니다.",
                         }
                     ),
@@ -105,7 +105,10 @@ def token_required(func):
         else:  # 토큰이 없는 경우 401 반환
             return make_response(
                 jsonify(
-                    {"result": "fail", "msg": "access token, refresh token이 없습니다."}
+                    {
+                        "result": "ERROR_TOKEN_NOT_EXIST",
+                        "msg": "access token, refresh token이 없습니다.",
+                    }
                 ),
                 401,
             )
