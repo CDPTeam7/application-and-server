@@ -90,8 +90,9 @@ class face_recognition(Resource):
             for result in results:
                 final_result = verify(target_embedding, result["image"])
                 # print(result["img_path"])
-                res = result
-                break
+                if final_result:
+                    res = result
+                    break
             if final_result:
                 print("Face verification succeeded.")
                 response = {
