@@ -160,17 +160,19 @@ class api_set_image(Resource):
         print(image_receive)"""
         f = request.files["image"]
         # print(os.getcwd())
-        f.save("./static/face/" + secure_filename(str(f.filename)))
-        embedding = get_target_embedding(
-            cv2.imread(("./static/face/" + secure_filename(str(f.filename))))
-        )
-        # print(type(embedding))
-        if payload is None:
-            return make_response(
-                jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
-                401,
-            )
         try:
+            f.save("./static/face/" + secure_filename(str(f.filename)))
+            embedding = get_target_embedding(
+                cv2.imread(("./static/face/" + secure_filename(str(f.filename))))
+            )
+            # print(type(embedding))
+            if payload is None:
+                return make_response(
+                    jsonify(
+                        {"result": "fail", "msg": "access token이 유효하지 않습니다."}
+                    ),
+                    401,
+                )
             id_receive = payload["id"]
             # select 쿼리 실행: request의 name과 동일한 document 찾기
             result = db.image.update_one(
