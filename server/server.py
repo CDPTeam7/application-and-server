@@ -11,6 +11,7 @@ from tokens import *
 from auth import Auth
 from point import Point
 from ranking import Ranking
+from image import Image
 from ai_service import Ai_service
 
 
@@ -22,7 +23,8 @@ api = Api(
     version="0.1",
     title="CDPTeam7's API Server",
     description="CDPTeam7's flask API Server",
-    terms_url="/",
+    doc="/documents/",
+    terms_url="/documents/",
     contact="holmane333@naver.com",
     license="MIT",
 )
@@ -41,6 +43,7 @@ api.add_namespace(TestAPI, "/")
 api.add_namespace(Auth, "/api/auth")
 api.add_namespace(Point, "/api/point")
 api.add_namespace(Ranking, "/api/ranking")
+api.add_namespace(Image, "/api/image")
 api.add_namespace(Ai_service, "/api/model")
 
 

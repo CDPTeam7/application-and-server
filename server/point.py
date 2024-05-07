@@ -24,7 +24,7 @@ point_check_response1_data = Point.model(
 point_check_response1 = Point.model(
     "Point_check_success",
     {
-        "result": fields.String(example="success"),
+        "result": fields.String(example="SUCCESS_CHECK_POINT"),
         "msg": fields.String(example="포인트 확인에 성공하였습니다."),
         "data": fields.Nested(point_check_response1_data),
     },
@@ -32,14 +32,14 @@ point_check_response1 = Point.model(
 point_check_response2 = Point.model(
     "Point_check_fail1",
     {
-        "result": fields.String(example="fail"),
+        "result": fields.String(example="ERROR_FAIL_CHECK_POINT"),
         "msg": fields.String(example="포인트 확인에 실패하였습니다."),
     },
 )
 point_check_response3 = Point.model(
     "Point_check_fail2",
     {
-        "result": fields.String(example="fail"),
+        "result": fields.String(example="ERROR_ACCESS_TOKEN_NOT_EXIST"),
         "msg": fields.String(example="access token이 유효하지 않습니다."),
     },
 )
@@ -49,17 +49,22 @@ point_check_response3 = Point.model(
 @Point.route("/check", methods=["GET"])
 class check_point(Resource):
     # @Point.expect(point_check_fields)
-    @Point.response(202, "success", point_check_response1)
-    @Point.response(401, "fail", point_check_response2)
-    @Point.response(402, "fail", point_check_response3)
+    @Point.response(200, "success", point_check_response1)
+    @Point.response(400, "fail", point_check_response2)
+    @Point.response(401, "fail", point_check_response3)
     @token_required
     def get(self):
         """현재 포인트를 얼마나 가지고 있는지를 확인합니다 - token 사용"""
         payload = get_payload_from_header()
         if payload is None:
             return make_response(
-                jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
-                402,
+                jsonify(
+                    {
+                        "result": "ERROR_ACCESS_TOKEN_NOT_EXIST",
+                        "msg": "access token이 유효하지 않습니다.",
+                    }
+                ),
+                401,
             )
         try:
             id_receive = payload["id"]
@@ -67,14 +72,17 @@ class check_point(Resource):
             result = db.user.find_one({"user_id": id_receive}, {"_id": 0, "point": 1})
             # 데이터를 처리하고 응답 생성
             response_data = {
-                "result": "success",
+                "result": "SUCCESS_CHECK_POINT",
                 "msg": "포인트 확인에 성공하였습니다.",
                 "data": result,
             }
-            return make_response(jsonify(response_data), 202)
+            return make_response(jsonify(response_data), 200)
         except:
-            response_data = {"result": "fail", "msg": "포인트 확인에 실패하였습니다."}
-            return make_response(jsonify(response_data), 401)
+            response_data = {
+                "result": "ERROR_FAIL_CHECK_POINT",
+                "msg": "포인트 확인에 실패하였습니다.",
+            }
+            return make_response(jsonify(response_data), 400)
 
 
 point_check_using_id_fields = Point.model(
@@ -86,18 +94,18 @@ point_check_using_id_fields = Point.model(
 point_check_using_id_response1_data = Point.model(
     "Point_check_using_id_response1_data", {"point": fields.Integer(example=30)}
 )
-point_check_using_id_response1 = Point.inherit(
+point_check_using_id_response1 = Point.model(
     "Point_check_using_id_success",
-    point_check_response1,
     {
+        "result": fields.String(example="SUCCESS_CHECK_POINT"),
         "msg": fields.String(example="포인트 확인에 성공하였습니다."),
         "data": fields.Nested(point_check_using_id_response1_data),
     },
 )
-point_check_using_id_response2 = Point.inherit(
+point_check_using_id_response2 = Point.model(
     "Point_check_using_id_fail",
-    point_check_response2,
     {
+        "result": fields.String(example="ERROR_FAIL_CHECK_POINT"),
         "msg": fields.String(example="포인트 확인에 실패하였습니다."),
     },
 )
@@ -107,8 +115,8 @@ point_check_using_id_response2 = Point.inherit(
 @Point.route("/check-use-id", methods=["POST"])
 class check_point_using_id(Resource):
     @Point.expect(point_check_using_id_fields)
-    @Point.response(202, "success", point_check_using_id_response1)
-    @Point.response(401, "fail", point_check_using_id_response2)
+    @Point.response(200, "success", point_check_using_id_response1)
+    @Point.response(400, "fail", point_check_using_id_response2)
     def post(self):
         """현재 포인트를 얼마나 가지고 있는지를 확인합니다 - id 사용"""
         req = request.get_json()  # api를 요청한 서버에서 보낸 json파일 저장
@@ -118,13 +126,16 @@ class check_point_using_id(Resource):
             result = db.user.find_one({"user_id": id_receive}, {"_id": 0, "point": 1})
             # 데이터를 처리하고 응답 생성
             response_data = {
-                "result": "success",
+                "result": "SUCCESS_CHECK_POINT",
                 "msg": "포인트 확인에 성공하였습니다.",
                 "data": result,
             }
             return make_response(jsonify(response_data), 202)
         except:
-            response_data = {"result": "fail", "msg": "포인트 확인에 실패하였습니다."}
+            response_data = {
+                "result": "ERROR_FAIL_CHECK_POINT",
+                "msg": "포인트 확인에 실패하였습니다.",
+            }
             return make_response(jsonify(response_data), 401)
 
 
@@ -140,25 +151,25 @@ point_add_fields = Point.model(
 point_add_response1_data = Point.model(
     "Point_add_response1_data", {"point": fields.Integer(example=30)}
 )
-point_add_response1 = Point.inherit(
+point_add_response1 = Point.model(
     "Point_add_success",
-    point_check_response1,
     {
+        "result": fields.String(example="SUCCESS_CHECK_POINT"),
         "msg": fields.String(example="포인트 적립에 성공하였습니다."),
         "data": fields.Nested(point_add_response1_data),
     },
 )
-point_add_response2 = Point.inherit(
+point_add_response2 = Point.model(
     "Point_add_fail1",
-    point_check_response2,
     {
+        "result": fields.String(example="ERROR_FAIL_ADD_POINT"),
         "msg": fields.String(example="포인트 적립에 실패하였습니다."),
     },
 )
-point_add_response3 = Point.inherit(
+point_add_response3 = Point.model(
     "Point_add_fail2",
-    point_check_response2,
     {
+        "result": fields.String(example="ERROR_ACCESS_TOKEN_NOT_EXIST"),
         "msg": fields.String(example="access token이 유효하지 않습니다."),
     },
 )
@@ -168,9 +179,9 @@ point_add_response3 = Point.inherit(
 @Point.route("/add", methods=["POST"])
 class add_point(Resource):
     @Point.expect(point_add_fields)
-    @Point.response(202, "success", point_add_response1)
-    @Point.response(401, "fail", point_add_response2)
-    @Point.response(402, "fail", point_add_response3)
+    @Point.response(200, "success", point_add_response1)
+    @Point.response(400, "fail", point_add_response2)
+    @Point.response(401, "fail", point_add_response3)
     def post(self):
         """요청한 포인트만큼 적립합니다 - token 사용"""
         req = request.get_json()
@@ -179,8 +190,13 @@ class add_point(Resource):
         payload = check_access_token(token_receive)
         if payload == None:
             return make_response(
-                jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
-                402,
+                jsonify(
+                    {
+                        "result": "ERROR_ACCESS_TOKEN_NOT_EXIST",
+                        "msg": "access token이 유효하지 않습니다.",
+                    }
+                ),
+                401,
             )
         try:
             id_receive = payload["id"]
@@ -188,18 +204,18 @@ class add_point(Resource):
             result = db.user.find_one_and_update(
                 {"user_id": id_receive},
                 {"$inc": {"point": point_receive}},
-                projection={"_id": 0, "point": 1},
+                projection={"_id": 0, "point": 1, "region": 1, "area": 1},
                 return_document=ReturnDocument.AFTER,
             )
             # 데이터를 처리하고 응답 생성
             if result is None:
                 response_data = {
-                    "result": "fail",
+                    "result": "ERROR_FAIL_ADD_POINT",
                     "msg": "포인트 적립에 실패하였습니다.",
                 }
-                return make_response(jsonify(response_data), 401)
+                return make_response(jsonify(response_data), 400)
             response_data = {
-                "result": "success",
+                "result": "SUCCESS_CHECK_POINT",
                 "msg": "포인트 적립에 성공하였습니다.",
                 "data": result,
             }
@@ -208,22 +224,27 @@ class add_point(Resource):
                 {
                     "$push": {
                         "point_history": {
-                            "date": datetime.datetime.now(),
+                            "transactionID": "TRANS_RECYCLE_RESOLVED",
+                            "date": time.mktime(datetime.datetime.now().timetuple()),
                             "point": point_receive,
                             "after_total": result["point"],
+                            "regionName": result["region"],
+                            "areaName": result["area"],
                         }
                     }
                 },
             )
-            return make_response(jsonify(response_data), 202)
+            return make_response(jsonify(response_data), 200)
         except:
-            response_data = {"result": "fail", "msg": "포인트 적립에 실패하였습니다."}
-            return make_response(jsonify(response_data), 401)
+            response_data = {
+                "result": "ERROR_FAIL_ADD_POINT",
+                "msg": "포인트 적립에 실패하였습니다.",
+            }
+            return make_response(jsonify(response_data), 400)
 
 
-point_add_using_id_fields = Point.inherit(
+point_add_using_id_fields = Point.model(
     "Point_add_using_id_request",
-    point_check_using_id_fields,
     {  # Model 객체 생성
         "access_token": fields.String(
             description="an access token", required=True, example="access token"
@@ -234,18 +255,18 @@ point_add_using_id_fields = Point.inherit(
 point_add_using_id_response1_data = Point.model(
     "Point_add_using_id_response1_data", {"point": fields.Integer(example=30)}
 )
-point_add_using_id_response1 = Point.inherit(
+point_add_using_id_response1 = Point.model(
     "Point_add_using_id_success",
-    point_check_using_id_response1,
     {
+        "result": fields.String(example="SUCCESS_ADD_POINT"),
         "msg": fields.String(example="포인트 적립에 성공하였습니다."),
         "data": fields.Nested(point_add_response1_data),
     },
 )
-point_add_using_id_response2 = Point.inherit(
+point_add_using_id_response2 = Point.model(
     "Point_add_using_id_fail",
-    point_check_using_id_response2,
     {
+        "result": fields.String(example="ERROR_FAIL_ADD_POINT"),
         "msg": fields.String(example="포인트 적립에 실패하였습니다."),
     },
 )
@@ -255,8 +276,8 @@ point_add_using_id_response2 = Point.inherit(
 @Point.route("/add-use-id", methods=["POST"])
 class add_point_using_id(Resource):
     @Point.expect(point_add_using_id_fields)
-    @Point.response(202, "success", point_add_using_id_response1)
-    @Point.response(401, "fail", point_add_using_id_response2)
+    @Point.response(200, "success", point_add_using_id_response1)
+    @Point.response(400, "fail", point_add_using_id_response2)
     def post(self):
         """요청한 포인트만큼 적립합니다 - id 사용"""
         req = request.get_json()
@@ -267,18 +288,18 @@ class add_point_using_id(Resource):
             result = db.user.find_one_and_update(
                 {"user_id": id_receive},
                 {"$inc": {"point": point_receive}},
-                projection={"_id": 0, "point": 1},
+                projection={"_id": 0, "point": 1, "region": 1},
                 return_document=ReturnDocument.AFTER,
             )
             # 데이터를 처리하고 응답 생성
             if result is None:
                 response_data = {
-                    "result": "fail",
+                    "result": "ERROR_FAIL_ADD_POINT",
                     "msg": "포인트 적립에 실패하였습니다.",
                 }
-                return make_response(jsonify(response_data), 401)
+                return make_response(jsonify(response_data), 400)
             response_data = {
-                "result": "success",
+                "result": "SUCCESS_ADD_POINT",
                 "msg": "포인트 적립에 성공하였습니다.",
                 "data": result,
             }
@@ -290,14 +311,19 @@ class add_point_using_id(Resource):
                             "date": datetime.datetime.now(),
                             "point": point_receive,
                             "after_total": result["point"],
+                            "region": result["region"],
+                            "area": result["area"],
                         }
                     }
                 },
             )
-            return make_response(jsonify(response_data), 202)
+            return make_response(jsonify(response_data), 200)
         except:
-            response_data = {"result": "fail", "msg": "포인트 적립에 실패하였습니다."}
-            return make_response(jsonify(response_data), 401)
+            response_data = {
+                "result": "ERROR_FAIL_ADD_POINT",
+                "msg": "포인트 적립에 실패하였습니다.",
+            }
+            return make_response(jsonify(response_data), 400)
 
 
 history_interval_fields_fromto = Point.model(
@@ -358,10 +384,10 @@ history_interval_response1_example = [
         "point": 50,
     },
 ]
-history_interval_response1 = Point.inherit(
+history_interval_response1 = Point.model(
     "History_interval_success",
-    point_check_response1,
     {
+        "result": fields.String(example="SUCCESS_INTERVAL_HISTORY"),
         "data": fields.List(
             fields.Nested(history_interval_response1_data),
             default=history_interval_response1_example,
@@ -369,17 +395,17 @@ history_interval_response1 = Point.inherit(
         "msg": fields.String(example="기간에 대한 포인트 내역 확인에 성공하였습니다."),
     },
 )
-history_interval_response2 = Point.inherit(
+history_interval_response2 = Point.model(
     "History_interval_fail1",
-    point_check_response2,
     {
+        "result": fields.String(example="ERROR_FAIL_INTERVAL_HISTORY"),
         "msg": fields.String(example="기간에 대한 포인트 내역 확인에 실패하였습니다."),
     },
 )
-history_interval_response3 = Point.inherit(
+history_interval_response3 = Point.model(
     "History_interval_fail2",
-    point_check_response2,
     {
+        "result": fields.String(example="ERROR_ACCESS_TOKEN_NOT_EXIST"),
         "msg": fields.String(example="access token이 유효하지 않습니다."),
     },
 )
@@ -389,9 +415,9 @@ history_interval_response3 = Point.inherit(
 @Point.route("/history/interval", methods=["POST"])
 class interval_history(Resource):
     @Point.expect(history_interval_fields)
-    @Point.response(202, "success", history_interval_response1)
-    @Point.response(401, "fail", history_interval_response2)
-    @Point.response(402, "fail", history_interval_response3)
+    @Point.response(200, "success", history_interval_response1)
+    @Point.response(400, "fail", history_interval_response2)
+    @Point.response(401, "fail", history_interval_response3)
     @token_required
     def post(self):
         """요청한 날짜 사이에 대한 포인트 내역을 확인합니다 - token 사용"""
@@ -401,8 +427,13 @@ class interval_history(Resource):
         payload = get_payload_from_header()
         if payload == None:
             return make_response(
-                jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
-                402,
+                jsonify(
+                    {
+                        "result": "ERROR_ACCESS_TOKEN_NOT_EXIST",
+                        "msg": "access token이 유효하지 않습니다.",
+                    }
+                ),
+                401,
             )
         try:
             id_receive = payload["id"]
@@ -418,22 +449,8 @@ class interval_history(Resource):
                                 "as": "point",
                                 "cond": {
                                     "$and": [
-                                        {
-                                            "$gte": [
-                                                "$$point.date",
-                                                datetime.datetime.fromtimestamp(
-                                                    from_receive / 1e3
-                                                ),
-                                            ]
-                                        },
-                                        {
-                                            "$lte": [
-                                                "$$point.date",
-                                                datetime.datetime.fromtimestamp(
-                                                    to_receive / 1e3
-                                                ),
-                                            ]
-                                        },
+                                        {"$gte": ["$$point.date", from_receive]},
+                                        {"$lte": ["$$point.date", to_receive]},
                                     ]
                                 },
                             }
@@ -443,20 +460,20 @@ class interval_history(Resource):
             ]
             result = list(db.history.aggregate(pipeline))
             # 데이터를 처리하고 응답 생성
-            print(result)
+            # print(result)
             response_data = {
-                "result": "success",
+                "result": "SUCCESS_INTERVAL_HISTORY",
                 "msg": "기간에 대한 포인트 내역 확인에 성공하였습니다.",
                 "data": result[0]["point_history"],
             }
-            return make_response(jsonify(response_data), 202)
+            return make_response(jsonify(response_data), 200)
         except Exception as e:
             print(str(e))
             response_data = {
-                "result": "fail",
+                "result": "ERROR_FAIL_INTERVAL_HISTORY",
                 "msg": "기간에 대한 포인트 내역 확인에 실패하였습니다.",
             }
-            return make_response(jsonify(response_data), 401)
+            return make_response(jsonify(response_data), 400)
 
 
 history_count_fields = Point.model(
@@ -496,10 +513,10 @@ history_count_response1_example = [
         "point": 50,
     },
 ]
-history_count_response1 = Point.inherit(
+history_count_response1 = Point.model(
     "History_count_success",
-    point_check_response1,
     {
+        "result": fields.String(example="SUCCESS_COUNT_HISTORY"),
         "data": fields.List(
             fields.Nested(history_count_response1_data),
             default=history_count_response1_example,
@@ -507,17 +524,17 @@ history_count_response1 = Point.inherit(
         "msg": fields.String(example="기간에 대한 포인트 내역 확인에 성공하였습니다."),
     },
 )
-history_count_response2 = Point.inherit(
+history_count_response2 = Point.model(
     "History_count_fail1",
-    point_check_response2,
     {
+        "result": fields.String(example="ERROR_FAIL_COUNT_HISTORY"),
         "msg": fields.String(example="기간에 대한 포인트 내역 확인에 실패하였습니다."),
     },
 )
-history_count_response3 = Point.inherit(
+history_count_response3 = Point.model(
     "History_count_fail2",
-    point_check_response2,
     {
+        "result": fields.String(example="ERROR_ACCESS_TOKEN_NOT_EXIST"),
         "msg": fields.String(example="access token이 유효하지 않습니다."),
     },
 )
@@ -527,9 +544,9 @@ history_count_response3 = Point.inherit(
 @Point.route("/history/count", methods=["POST"])
 class count_history(Resource):
     @Point.expect(history_count_fields)
-    @Point.response(202, "success", history_count_response1)
-    @Point.response(401, "fail", history_count_response2)
-    @Point.response(402, "fail", history_count_response3)
+    @Point.response(200, "success", history_count_response1)
+    @Point.response(400, "fail", history_count_response2)
+    @Point.response(401, "fail", history_count_response3)
     @token_required
     def post(self):
         """요청한 위치부터 개수만큼 포인트 내역을 확인합니다 - token 사용"""
@@ -539,7 +556,12 @@ class count_history(Resource):
         payload = get_payload_from_header()
         if payload == None:
             return make_response(
-                jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
+                jsonify(
+                    {
+                        "result": "ERROR_ACCESS_TOKEN_NOT_EXIST",
+                        "msg": "access token이 유효하지 않습니다.",
+                    }
+                ),
                 402,
             )
         try:
@@ -563,14 +585,14 @@ class count_history(Resource):
             result = list(db.history.aggregate(pipeline))
             # 데이터를 처리하고 응답 생성
             response_data = {
-                "result": "success",
+                "result": "SUCCESS_COUNT_HISTORY",
                 "msg": "기간에 대한 포인트 내역 확인에 성공하였습니다.",
                 "data": result[0]["point_history"],
             }
             return make_response(jsonify(response_data), 202)
         except:
             response_data = {
-                "result": "fail",
+                "result": "ERROR_FAIL_COUNT_HISTORY",
                 "msg": "기간에 대한 포인트 내역 확인에 실패하였습니다.",
             }
             return make_response(jsonify(response_data), 401)
