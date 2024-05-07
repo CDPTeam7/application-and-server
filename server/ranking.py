@@ -1328,6 +1328,7 @@ class ranking_individual_myrank(Resource):
                         "output": {"rank": {"$rank": {}}},
                     }
                 },
+                {"$match": {"user_id": id_receive}},
                 {
                     "$project": {
                         "_id": 0,
@@ -1339,7 +1340,6 @@ class ranking_individual_myrank(Resource):
                         "rankDeriv": 1,
                     },
                 },
-                {"$match": {"user_id": id_receive}},
             ]
             result = list(db.user.aggregate(pipeline))
             # 데이터를 처리하고 응답 생성
@@ -1454,16 +1454,17 @@ class ranking_region_myrank(Resource):
                 {"$match": {"region": region_receive}},
                 {
                     "$setWindowFields": {
-                        "sortBy": {"prev_total": -1},
+                        "sortBy": {"prev_score": -1},
                         "output": {"rankDeriv": {"$rank": {}}},
                     }
                 },
                 {
                     "$setWindowFields": {
-                        "sortBy": {"total": -1},
+                        "sortBy": {"score": -1},
                         "output": {"rank": {"$rank": {}}},
                     }
                 },
+                {"$match": {"user_id": id_receive}},
                 {
                     "$project": {
                         "_id": 0,
@@ -1471,11 +1472,10 @@ class ranking_region_myrank(Resource):
                         "areaName": "$area",
                         "nick": 1,
                         "rank": 1,
-                        "score": "$total",
+                        "score": 1,
                         "rankDeriv": 1,
                     },
                 },
-                {"$match": {"user_id": id_receive}},
             ]
             result = list(db.user.aggregate(pipeline))
             """
@@ -1639,16 +1639,17 @@ class ranking_area_myrank(Resource):
                 },
                 {
                     "$setWindowFields": {
-                        "sortBy": {"prev_total": -1},
+                        "sortBy": {"prev_score": -1},
                         "output": {"rankDeriv": {"$rank": {}}},
                     }
                 },
                 {
                     "$setWindowFields": {
-                        "sortBy": {"total": -1},
+                        "sortBy": {"score": -1},
                         "output": {"rank": {"$rank": {}}},
                     }
                 },
+                {"$match": {"user_id": id_receive}},
                 {
                     "$project": {
                         "_id": 0,
@@ -1656,11 +1657,10 @@ class ranking_area_myrank(Resource):
                         "areaName": "$area",
                         "nick": 1,
                         "rank": 1,
-                        "score": "$total",
+                        "score": 1,
                         "rankDeriv": 1,
                     },
                 },
-                {"$match": {"user_id": id_receive}},
             ]
             result = list(db.user.aggregate(pipeline))
             """
