@@ -1,10 +1,6 @@
-import json
-from io import BytesIO
-import base64
 from deepface import DeepFace
 from database import db
 import math
-import os
 import cv2
 from ultralytics import YOLO
 import torch

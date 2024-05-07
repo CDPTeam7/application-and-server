@@ -4,17 +4,8 @@ from flask import send_file
 from flask_restx import Resource, Namespace, fields  # Api 구현을 위한 Api 객체 import
 from tokens import *
 from database import db
-import torch
-import torchvision.models as models
-import torchvision.transforms as transforms
-import numpy as np
-from PIL import Image
-from model.model import CNN
 import cv2
 from werkzeug.utils import secure_filename
-from detection import *
-from ultralytics import YOLO
-import math
 from detection import *
 
 # 전처리
