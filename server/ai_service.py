@@ -29,23 +29,25 @@ normalize = transforms.Compose(
 pet_recognition_fields = Ai_service.model(
     "Pet_recognition_request",
     {  # Model 객체 생성
-        "images": fields.String(
-            description="an Images", required=True, example="np.array(image).tolist()"
-        )
+        "image": fields.String(description="an Images", required=True, example="pet image")
     },
+)
+pet_recognition_response1_data = Ai_service.model(
+    "Pet_recognition_data", {"count": fields.Integer(example=2)}
 )
 pet_recognition_response1 = Ai_service.model(
     "Pet_recognition_success",
     {
-        "result": fields.String(example="success"),
-        "data": fields.String(example="pet_bottle"),
+        "result": fields.String(example="SUCCESS_PET_RECOGNITION"),
+        "msg": fields.String(example="페트병 인식에 성공하였습니다."),
+        "data": fields.Nested(pet_recognition_response1_data, example={"count": 2}),
     },
 )
 pet_recognition_response2 = Ai_service.model(
     "Pet_recognition_fail",
     {
-        "result": fields.String(example="fail"),
-        "msg": fields.String(example="평가할 수 없습니다."),
+        "result": fields.String(example="ERROR_FAIL_PET_RECOGNITION"),
+        "msg": fields.String(example="페트병 인식에 실패하였습니다."),
     },
 )
 
@@ -59,15 +61,72 @@ class pet_recognition(Resource):
     def post(self):
         """입력된 페트병 이미지에 대해 개수를 구해줍니다."""
         frame = request.files["image"]
-        result = image_detection(frame)
-        return make_response(
-            jsonify({"result": "SUCCESS_PET_RECOGNITION", "data": {"count": result}}),
-            202,
-        )
+        try:
+            result = image_detection(frame)
+            return make_response(
+                jsonify(
+                    {
+                        "result": "SUCCESS_PET_RECOGNITION",
+                        "msg": "페트병 인식에 성공하였습니다.",
+                        "data": {"count": result},
+                    }
+                ),
+                200,
+            )
+        except Exception as e:
+            print(e)
+            return make_response(
+                jsonify(
+                    {
+                        "result": "ERROR_FAIL_PET_RECOGNITION",
+                        "msg": "페트병 인식에 실패하였습니다.",
+                    }
+                ),
+                400,
+            )
+
+
+face_recognition_fields = Ai_service.model(
+    "Face_recognition_request",
+    {  # Model 객체 생성
+        "image": fields.String(description="an Images", required=True, example="face image")
+    },
+)
+face_recognition_response1_data = Ai_service.model(
+    "Face_recognition_data", {"user_id": fields.String(example="ID")}
+)
+face_recognition_response1 = Ai_service.model(
+    "Face_recognition_success1",
+    {
+        "result": fields.String(example="SUCCESS_LOGIN"),
+        "msg": fields.String(example="얼굴 인식 성공 및 로그인 성공하였습니다."),
+        "data": fields.Nested(
+            pet_recognition_response1_data, example={"user_id": "ID"}
+        ),
+    },
+)
+face_recognition_response2 = Ai_service.model(
+    "Face_recognition_success2",
+    {
+        "result": fields.String(example="ERROR_FAIL_LOGIN"),
+        "msg": fields.String(example="얼굴 인식 성공 및 로그인 실패하였습니다."),
+    },
+)
+face_recognition_response3 = Ai_service.model(
+    "Face_recognition_fail",
+    {
+        "result": fields.String(example="ERROR_FAIL_FACE_RECOGNITION"),
+        "msg": fields.String(example="얼굴 인식에 실패하였습니다."),
+    },
+)
 
 
 @Ai_service.route("/face-recognition")
 class face_recognition(Resource):
+    @Ai_service.expect(face_recognition_fields)
+    @Ai_service.response(200, "success", face_recognition_response1)
+    @Ai_service.response(202, "success", face_recognition_response2)
+    @Ai_service.response(400, "fail", face_recognition_response3)
     def post(self):
         """입력된 얼굴 이미지에 대해 인증을 확인하여 로그인 여부를 구해줍니다."""
         frame = request.files["image"]
