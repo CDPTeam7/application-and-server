@@ -293,7 +293,7 @@ ranking_individual_response3 = Ranking.inherit(
 """
 
 
-@Ranking.route("/aggregation/individual/top10")
+@Ranking.route("/top")
 class ranking_individual_top10(Resource):
     # @Ranking.expect(ranking_individual_fields)
     @Ranking.response(200, "success", ranking_individual_response1)
@@ -477,7 +477,7 @@ ranking_individual_response3 = Ranking.inherit(
 """
 
 
-@Ranking.route("/aggregation/region/top10")
+@Ranking.route("/region/top")
 class ranking_region_top10(Resource):
     @Ranking.expect(ranking_region_top10_fields)
     @Ranking.response(200, "success", ranking_region_top10_response1)
@@ -649,7 +649,7 @@ ranking_individual_response3 = Ranking.inherit(
 """
 
 
-@Ranking.route("/aggregation/area/top10")
+@Ranking.route("/area/top")
 class ranking_area_top10(Resource):
     @Ranking.expect(ranking_area_top10_fields)
     @Ranking.response(200, "success", ranking_area_top10_response1)
@@ -796,7 +796,7 @@ ranking_individual_myrank_response3 = Ranking.model(
 )
 
 
-@Ranking.route("/aggregation/individual/myrank")
+@Ranking.route("/my-rank")
 class ranking_individual_myrank(Resource):
     # @Ranking.expect(ranking_individual_fields)
     @Ranking.response(200, "success", ranking_individual_myrank_response1)
@@ -930,7 +930,7 @@ ranking_region_myrank_response3 = Ranking.inherit(
 )
 
 
-@Ranking.route("/aggregation/region/myrank")
+@Ranking.route("/region/my-rank")
 class ranking_region_myrank(Resource):
     @Ranking.expect(ranking_region_myrank_fields)
     @Ranking.response(200, "success", ranking_region_myrank_response1)
@@ -1084,7 +1084,7 @@ ranking_area_myrank_response3 = Ranking.model(
 )
 
 
-@Ranking.route("/aggregation/area/myrank")
+@Ranking.route("/area/my-rank")
 class ranking_area_myrank(Resource):
     @Ranking.expect(ranking_area_myrank_fields)
     @Ranking.response(200, "success", ranking_area_myrank_response1)

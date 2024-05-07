@@ -204,7 +204,7 @@ class add_point(Resource):
             result = db.user.find_one_and_update(
                 {"user_id": id_receive},
                 {"$inc": {"point": point_receive}},
-                projection={"_id": 0, "point": 1, "region": 1},
+                projection={"_id": 0, "point": 1, "region": 1, "area": 1},
                 return_document=ReturnDocument.AFTER,
             )
             # 데이터를 처리하고 응답 생성
@@ -225,13 +225,11 @@ class add_point(Resource):
                     "$push": {
                         "point_history": {
                             "transactionID": "TRANS_RECYCLE_RESOLVED",
-                            "date": datetime.datetime.fromtimestamp(
-                                datetime.datetime.now() / 1e3
-                            ),
+                            "date": time.mktime(datetime.datetime.now().timetuple()),
                             "point": point_receive,
                             "after_total": result["point"],
-                            "regionName": result["region"][0],
-                            "areaName": result["region"][1],
+                            "regionName": result["region"],
+                            "areaName": result["area"],
                         }
                     }
                 },
@@ -314,6 +312,7 @@ class add_point_using_id(Resource):
                             "point": point_receive,
                             "after_total": result["point"],
                             "region": result["region"],
+                            "area": result["area"],
                         }
                     }
                 },
@@ -450,22 +449,8 @@ class interval_history(Resource):
                                 "as": "point",
                                 "cond": {
                                     "$and": [
-                                        {
-                                            "$gte": [
-                                                "$$point.date",
-                                                datetime.datetime.fromtimestamp(
-                                                    from_receive / 1e3
-                                                ),
-                                            ]
-                                        },
-                                        {
-                                            "$lte": [
-                                                "$$point.date",
-                                                datetime.datetime.fromtimestamp(
-                                                    to_receive / 1e3
-                                                ),
-                                            ]
-                                        },
+                                        {"$gte": ["$$point.date", from_receive]},
+                                        {"$lte": ["$$point.date", to_receive]},
                                     ]
                                 },
                             }

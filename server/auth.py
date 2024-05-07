@@ -236,7 +236,7 @@ class api_login(Resource):
                 return make_response(
                     jsonify(
                         {
-                            "result": "success",
+                            "result": "SUCCESS_LOGIN",
                             "user_id": id_receive,
                             "nickname": result["nick"],
                             "regionName": result["region"],
@@ -290,12 +290,12 @@ check_response3 = Auth.model(
 
 
 # access/refresh Token이 유효한지 확인하는 함수
-@Auth.route("/check-token", methods=["POST"])
+@Auth.route("/check-token", methods=["GET"])
 class api_check_token(Resource):
     @Auth.response(200, "success_access_token", check_response1)
     @Auth.response(201, "success_refresh_token", check_response2)
     @Auth.response(400, "fail", check_response3)
-    def post(self):
+    def get(self):
         """access token, refresh token이 있는지를 확인합니다.
         header.Cookie로 token 입력
         ex) header.Cookie: "accessToken=string; refreshToken=string" """
@@ -503,7 +503,7 @@ class api_check_userinfo(Resource):
                 {"user_id": id_receive},
                 {
                     "_id": 0,
-                    "nickname": 1,
+                    "nickname": "$nick",
                     "point": 1,
                     "score": 1,
                     "regionName": "$region",
@@ -586,8 +586,15 @@ class api_modify_userinfo(Resource):
             # select 쿼리 실행: request의 name과 동일한 document 찾기
             result = db.user.update_one(
                 {"user_id": id_receive},
-                {"nick": nick_receive, "region": region_receive, "area": area_receive},
+                {
+                    "$set": {
+                        "nick": nick_receive,
+                        "region": region_receive,
+                        "area": area_receive,
+                    }
+                },
             )
+            print(result.matched_count)
             if result.matched_count > 0:
                 # 데이터를 처리하고 응답 생성
                 response_data = {
