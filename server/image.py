@@ -67,17 +67,17 @@ get_image_response3 = Image.model(
 # 회원가입
 @Image.route("/check-image", methods=["GET"])
 class api_get_image(Resource):
-    @Image.response(202, "success", get_image_response1)
-    @Image.response(401, "fail", get_image_response2)
-    @Image.response(402, "fail", get_image_response3)
-    # @token_required
+    @Image.response(200, "success", get_image_response1)
+    @Image.response(400, "fail", get_image_response2)
+    @Image.response(401, "fail", get_image_response3)
+    @token_required
     def get(self):
         """이미지 정보를 확인합니다"""
         payload = get_payload_from_header()
         if payload is None:
             return make_response(
                 jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
-                402,
+                401,
             )
         try:
             result = db.image.find_one(
@@ -91,14 +91,14 @@ class api_get_image(Resource):
             # print(type(result["path"]))
             # print(os.getcwd())
 
-            return send_file("." + result["path"])
+            return make_response(send_file("." + result["path"]), 200)
             # return make_response(jsonify(response_data), 202)
         except:
             response_data = {
                 "result": "fail",
                 "msg": "이미지 정보 확인에 실패하였습니다.",
             }
-            return make_response(jsonify(response_data), 401)
+            return make_response(jsonify(response_data), 400)
 
 
 set_image_fields = Image.model(
@@ -134,12 +134,13 @@ set_image_response3 = Image.inherit(
 @Image.route("/set-image", methods=["POST"])
 class api_set_image(Resource):
     @Image.expect(set_image_fields)
-    @Image.response(202, "success", set_image_response1)
-    @Image.response(401, "fail", set_image_response2)
-    @Image.response(402, "fail", set_image_response3)
+    @Image.response(200, "success", set_image_response1)
+    @Image.response(400, "fail", set_image_response2)
+    @Image.response(401, "fail", set_image_response3)
+    @token_required
     def post(self):
         """이미지 정보를 저장합니다"""
-        # payload = get_payload_from_header()
+        payload = get_payload_from_header()
         """req = request.get_data()
         print(1)
         # print(req)
@@ -159,25 +160,25 @@ class api_set_image(Resource):
         print(image_receive)"""
         f = request.files["image"]
         # print(os.getcwd())
-        f.save("./static/" + secure_filename(str(f.filename)))
+        f.save("./static/face/" + secure_filename(str(f.filename)))
         embedding = get_target_embedding(
-            cv2.imread(("./static/" + secure_filename(str(f.filename))))
+            cv2.imread(("./static/face/" + secure_filename(str(f.filename))))
         )
         # print(type(embedding))
-        """if payload is None:
+        if payload is None:
             return make_response(
                 jsonify({"result": "fail", "msg": "access token이 유효하지 않습니다."}),
-                402,
-            )"""
+                401,
+            )
         try:
-            id_receive = "1231"  # payload["id"]
+            id_receive = payload["id"]
             # select 쿼리 실행: request의 name과 동일한 document 찾기
             result = db.image.update_one(
                 {"user_id": id_receive},
                 {
                     "$set": {
                         "image": embedding,
-                        "path": ("./static/" + secure_filename(str(f.filename))),
+                        "path": ("./static/face/" + secure_filename(str(f.filename))),
                     }
                 },
             )
@@ -188,16 +189,16 @@ class api_set_image(Resource):
                     "result": "success",
                     "msg": "이미지 정보 저장에 성공하였습니다.",
                 }
-                return make_response(jsonify(response_data), 202)
+                return make_response(jsonify(response_data), 200)
             response_data = {
                 "result": "fail",
                 "msg": "이미지 정보 저장에 실패하였습니다.",
             }
-            return make_response(jsonify(response_data), 401)
+            return make_response(jsonify(response_data), 400)
         except Exception as e:
             print(e)
             response_data = {
                 "result": "fail",
                 "msg": "이미지 정보 저장에 실패하였습니다.",
             }
-            return make_response(jsonify(response_data), 401)
+            return make_response(jsonify(response_data), 400)
