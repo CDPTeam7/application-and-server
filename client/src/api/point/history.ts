@@ -1,5 +1,6 @@
 import { axiosWithCookie } from "@/utils/axios";
 import { TOKEN_ACCESS_ID, getCookie } from "@/utils/cookie";
+import { AxiosResponse } from "axios";
 
 export interface PointRecord {
   afterTotal: number;
@@ -14,11 +15,24 @@ export interface PointRecord {
  * @param recordCount 가져올 point record의 개수
  */
 export function requestPointByCount(from: number, recordCount: number) {
+  interface PointRecord {
+    transactionID: string;
+    date: number;
+    regionName: string;
+    areaName: string;
+    point: number;
+    after_total: number;
+  }
+  interface Response {
+    data: PointRecord[];
+    result: string;
+    msg: string;
+  }
   return axiosWithCookie.post("/api/point/history/count", {
     access_token: getCookie(TOKEN_ACCESS_ID),
     from,
     count: recordCount,
-  });
+  }) as Promise<AxiosResponse<Response>>;
 }
 
 export function interval() {
