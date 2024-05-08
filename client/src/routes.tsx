@@ -1,5 +1,5 @@
 import { MainPage, LoginPage, SignupPage, ProfilePage } from "@/pages";
-import RankingPage from "./pages/Ranking";
+import RankingPage from "./pages/Rank";
 import { RouteObject, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import NotificationsPage from "./pages/Notification/NotificationPage";
