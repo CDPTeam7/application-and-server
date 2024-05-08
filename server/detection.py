@@ -1,15 +1,12 @@
-import json
-from io import BytesIO
-import base64
 from deepface import DeepFace
 from database import db
 import math
-import os
 import cv2
 from ultralytics import YOLO
 import torch
 
 pet_model = YOLO("./server/model/best.pt")
+
 classNames = [
     "0",
     "1",
@@ -39,7 +36,7 @@ classNames = [
 ]
 
 
-def image_detection(image_path, save_path):
+def image_detection(image_path):
     # --------------------------------추론----------------------------------#
     # 이미지 불러오기
     img = cv2.imread(image_path)
@@ -66,19 +63,20 @@ def image_detection(image_path, save_path):
             c2 = x1 + t_size[0], y1 - t_size[1] - 3
             if class_name in ["2", "4", "6", "8", "10", "12"]:  # target plastic bottle
                 target_count += 1
-                color = (222, 82, 175)
+            """    color = (222, 82, 175)
             # elif class_name == "4": # other plastic bottle
             #     color = (0, 149, 255)
             else:  # not plastic bottle
                 color = (85, 45, 255)
             # if conf > 0.25:
             cv2.rectangle(img, (x1, y1), (x2, y2), color, 3)
-            cv2.rectangle(img, (x1, y1), c2, color, -1, cv2.LINE_AA)
+            cv2.rectangle(img, (x1, y1), c2, color, -1, cv2.LINE_AA)"""
             # Adjust text location if it goes out of frame
-            if y1 - t_size[1] < 0:
+            """if y1 - t_size[1] < 0:
                 text_y = y1 + t_size[1] + 3
             else:
                 text_y = y1 - 2
+                
             cv2.putText(
                 img,
                 label,
@@ -88,15 +86,15 @@ def image_detection(image_path, save_path):
                 [255, 255, 255],
                 thickness=1,
                 lineType=cv2.LINE_AA,
-            )
+            )"""
 
-    print(f"target count : {target_count}")
+    """print(f"target count : {target_count}")
     result_image_path = os.path.join(save_path, os.path.basename(image_path))
 
     # 추론 결과 저장
-    cv2.imwrite(result_image_path, img)
+    cv2.imwrite(result_image_path, img)"""
 
-    return result_image_path
+    return target_count
 
 
 # target image의 embedding 정보 얻기
@@ -133,7 +131,7 @@ def search_similar_images(target_embedding):
             {
                 "$vectorSearch": {
                     "index": "vector_index",
-                    "path": "embedding",
+                    "path": "image",
                     "queryVector": target_embedding,
                     "numCandidates": 50,
                     "limit": 3,

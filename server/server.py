@@ -42,7 +42,7 @@ TestAPI = Namespace(
 api.add_namespace(TestAPI, "/")
 api.add_namespace(Auth, "/api/auth")
 api.add_namespace(Point, "/api/point")
-api.add_namespace(Ranking, "/api/ranking")
+api.add_namespace(Ranking, "/api/rank")
 api.add_namespace(Image, "/api/image")
 api.add_namespace(Ai_service, "/api/model")
 

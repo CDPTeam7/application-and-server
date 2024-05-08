@@ -2,7 +2,6 @@
 from flask import request, jsonify, make_response  # flask 관련 라이브러리
 from flask_restx import Resource, Namespace, fields  # Api 구현을 위한 Api 객체 import
 import hashlib  # 비밀번호 암호화를 위한 모듈
-import jwt  # jwt 토큰을 발급하기 위한 모듈
 from tokens import *
 from database import db
 import os
