@@ -8,7 +8,6 @@ interface LoginCheckContainerProps {
 
 export default function LoginCheckContainer(props: LoginCheckContainerProps) {
   const user = useAuthStore((state) => state.currentUser);
-
   if (props.shouldLogin && user === null) {
     return <Navigate replace to="/login" />;
   }

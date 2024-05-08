@@ -44,7 +44,7 @@ export const routes: RouteObject[] = [
   },
   {
     id: "순위",
-    path: "/ranking?/:ID",
+    path: "/rank?/:ID",
     element: <RankingPage />,
   },
 ];

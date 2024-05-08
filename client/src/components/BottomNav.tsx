@@ -31,7 +31,7 @@ export const tabBarRoutes = [
     label: "홈",
   },
   {
-    path: "/ranking",
+    path: "/rank",
     icon: <StackedLineChartIcon />,
     label: "순위",
   },

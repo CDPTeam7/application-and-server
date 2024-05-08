@@ -3,14 +3,14 @@ import { axiosWithCookie } from "@/utils/axios";
 import { AxiosResponse } from "axios";
 
 export function requestAreaTopRank(region: string, area: string) {
-  return axiosWithCookie.post("/api/ranking/area/top", {
+  return axiosWithCookie.post("/api/rank/area/top", {
     regionName: region,
     areaName: area,
   }) as Promise<AxiosResponse<TopRankResponse>>;
 }
 
 export function requestAreaMyRank(region: string, area: string) {
-  return axiosWithCookie.post("/api/ranking/area/my-rank", {
+  return axiosWithCookie.post("/api/rank/area/my-rank", {
     regionName: region,
     areaName: area,
   }) as Promise<AxiosResponse<MyRankResponse>>;

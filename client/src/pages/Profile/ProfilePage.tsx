@@ -34,17 +34,12 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   return (
     <LoginCheckContainer shouldLogin={true}>
-      <SubPage title="내 프로필">
-        <Box className={profileStyle}>
+      <SubPage title="내 정보">
+        {/* <Box className={profileStyle}>
           <Avatar alt="User" src="/static/images/avatar/1.jpg" sx={{ width: 128, height: 128, marginBottom: "32px" }} />
-          <Typography variant="h2">{currentUser?.nickname} 님</Typography>
-          <Typography variant="h3">{currentUser?.region}</Typography>
-        </Box>
-
-        <Card className={cardMargin}>
-          {/* 여기 재활용 몇일차인지 알려주는 정보 필요. */}
-          <CardContent icon={EnergySavingsLeafIcon} subtitle={"나의 재활용 현황"} title={`재활용 ${10}일째`} />
-        </Card>
+        </Box> */}
+        <Typography variant="h6">{currentUser?.nickname} 님</Typography>
+        <Typography variant="subtitle2">{`${currentUser?.region} ${currentUser?.area}`}</Typography>
         <Card className={cardMargin}>
           <CardContent icon={CameraIcon} subtitle={"얼굴인식이 안될 경우"} title={`얼굴인식 다시 하기`} />
         </Card>

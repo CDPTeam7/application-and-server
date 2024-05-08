@@ -2,36 +2,26 @@ import { requestPointByCount } from "@/api";
 import { PointRecord } from "@/types/PointRecord";
 import { useEffect, useState } from "react";
 
-/**
- * 백엔드에 맞춘 타입입니다. API 결과와 동일해야합니다.
- */
-interface APIPointRecord {
-  after_total: number;
-  date: string;
-  areaName: string | undefined;
-  point: number;
-}
-
 export const usePoint = () => {
   const [point, setPoint] = useState<PointRecord[]>([]);
 
-  const fetchPoint = async (from: number, count: number): Promise<PointRecord[]> => {
+  const fetchPoint = async (from: number, count: number) => {
     try {
       const result = await requestPointByCount(from, count);
       // API 에서 가져오는 결과 타입으로 수정하기
-      return result.data.data.map((value: APIPointRecord) => {
+      result.data.data.forEach((value) => {
         if (value)
-          return {
-            transactionID: "NONE",
-            areaName: value.areaName ?? "어딘가",
+          point.push({
+            transactionID: value.transactionID,
+            areaName: `${value.regionName} ${value.areaName}`,
             date: new Date(value.date),
-            place: "unknown",
             point: value.point,
             afterTotal: value.after_total,
-          };
+          });
       });
+      setPoint([...point]);
     } catch (e) {
-      return [];
+      setPoint([]);
     }
   };
 
@@ -42,9 +32,7 @@ export const usePoint = () => {
   };
 
   useEffect(() => {
-    fetchPoint(0, 5).then((value) => {
-      setPoint(point.concat(value));
-    });
+    fetchPoint(0, 5);
   }, []);
 
   return { point, fetchPoint, getCurrentPoint };

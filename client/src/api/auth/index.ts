@@ -67,6 +67,7 @@ export function requestModifyUserInfo(data: { nickname: string; region: string; 
 
   return axiosWithCookie.post("/api/auth/modify-userinfo", {
     nickname,
-    region: [region, area],
+    regionName: region,
+    areaName: area,
   }) as Promise<AxiosResponse<ModifyUserInfo>>;
 }
