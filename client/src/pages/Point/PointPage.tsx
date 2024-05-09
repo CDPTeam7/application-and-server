@@ -89,7 +89,11 @@ export default function PointPage() {
         </Typography>
         <PageCardDivider />
 
-        {pointNode}
+        {point.length !== 0 ? (
+          pointNode
+        ) : (
+          <div style={{ display: "flex", justifyContent: "center", color: "#787878" }}>재활용 기록이 없습니다.</div>
+        )}
 
         <div className="checkMore" onClick={() => fetchPoint(point.length, point.length + 5)}>
           5개 더 확인하기

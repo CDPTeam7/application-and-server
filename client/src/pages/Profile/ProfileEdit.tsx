@@ -73,6 +73,7 @@ export default function ProfileEdit() {
             renderInput={(params) => <TextField {...params} variant="standard" label="내 시" />}
             options={getRegionName()}
             className={textFieldStyle}
+            value={region}
             onChange={(_e, value) => {
               setRegion(value);
               setSelectedRegion(value);
@@ -81,6 +82,7 @@ export default function ProfileEdit() {
           <Autocomplete
             renderInput={(params) => <TextField {...params} variant="standard" label="내 구" />}
             options={selectedRegion === null ? [] : getAreaName(selectedRegion)}
+            value={area}
             className={textFieldStyle}
             onChange={(_e, value) => {
               setArea(value);

@@ -7,25 +7,27 @@ import SubPage from "@/components/SubPage";
 import Card from "@/components/common/Card";
 import CardContent from "@/components/common/CardContent";
 import CameraIcon from "@mui/icons-material/Camera";
+import UploadIcon from "@mui/icons-material/Upload";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/stores/useAuthStore";
 
-const cardMargin = css`
-  margin-top: 16px;
-`;
-
-const profileStyle = css`
+const uploadBarStyle = css`
   display: flex;
-  flex-direction: column;
+  width: -webkit-fill-available;
+  margin: 1rem 0rem !important;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  & h2 {
-    font-weight: 600;
-    font-size: 1.6rem;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid ${ThemeSheet.Gray[200]} !important;
+  height: 64px;
+  & svg {
+    color: ${ThemeSheet.Gray[700]};
+    margin-right: 6px;
   }
-  & h3 {
-    color: ${ThemeSheet.Gray[400]};
-    font-size: 1.3rem;
+  & span {
+    color: ${ThemeSheet.Gray[600]};
   }
 `;
 
@@ -40,9 +42,20 @@ export default function ProfilePage() {
         </Box> */}
         <Typography variant="h6">{currentUser?.nickname} 님</Typography>
         <Typography variant="subtitle2">{`${currentUser?.region} ${currentUser?.area}`}</Typography>
-        <Card className={cardMargin}>
-          <CardContent icon={CameraIcon} subtitle={"얼굴인식이 안될 경우"} title={`얼굴인식 다시 하기`} />
-        </Card>
+        <Typography variant="h6" sx={{ marginTop: "16px" }}>
+          얼굴 인식이 안되세요?
+        </Typography>
+        <Button className={uploadBarStyle}>
+          <CameraIcon />
+          <span>카메라 촬영하기</span>
+        </Button>
+        <Button className={uploadBarStyle}>
+          <UploadIcon />
+          <span>인식 가능한 얼굴 업로드</span>
+        </Button>
+        <Typography variant="h6" sx={{ marginTop: "16px" }}>
+          내 정보 수정하기
+        </Typography>
         <Button variant="outlined" sx={{ marginTop: "32px" }} onClick={() => navigate("/profile/edit")}>
           수정하기
         </Button>
