@@ -5,3 +5,4 @@
 .vscode/
 
 static/
+docker-compose.yml
