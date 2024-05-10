@@ -7,6 +7,7 @@ from database import db
 import cv2
 from werkzeug.utils import secure_filename
 from detection import *
+from tokens import *
 
 # 전처리
 Ai_service = Namespace(
@@ -29,7 +30,9 @@ normalize = transforms.Compose(
 pet_recognition_fields = Ai_service.model(
     "Pet_recognition_request",
     {  # Model 객체 생성
-        "image": fields.String(description="an Images", required=True, example="pet image")
+        "image": fields.String(
+            description="an Images", required=True, example="pet image"
+        )
     },
 )
 pet_recognition_response1_data = Ai_service.model(
@@ -61,8 +64,10 @@ class pet_recognition(Resource):
     def post(self):
         """입력된 페트병 이미지에 대해 개수를 구해줍니다."""
         frame = request.files["image"]
+        frame.save("./static/pet-recog/" + secure_filename(str(frame.filename)))
+        frame_path = "./static/pet-recog/" + secure_filename(str(frame.filename))
         try:
-            result = image_detection(frame)
+            result = image_detection(frame_path)
             return make_response(
                 jsonify(
                     {
@@ -89,11 +94,18 @@ class pet_recognition(Resource):
 face_recognition_fields = Ai_service.model(
     "Face_recognition_request",
     {  # Model 객체 생성
-        "image": fields.String(description="an Images", required=True, example="face image")
+        "image": fields.String(
+            description="an Images", required=True, example="face image"
+        )
     },
 )
 face_recognition_response1_data = Ai_service.model(
-    "Face_recognition_data", {"user_id": fields.String(example="ID")}
+    "Face_recognition_data",
+    {
+        "user_id": fields.String(example="admin"),
+        "access_token": fields.String(example="access_token"),
+        "refresh_token": fields.String(example="refresh_token"),
+    },
 )
 face_recognition_response1 = Ai_service.model(
     "Face_recognition_success1",
@@ -101,7 +113,7 @@ face_recognition_response1 = Ai_service.model(
         "result": fields.String(example="SUCCESS_LOGIN"),
         "msg": fields.String(example="얼굴 인식 성공 및 로그인 성공하였습니다."),
         "data": fields.Nested(
-            pet_recognition_response1_data, example={"user_id": "ID"}
+            pet_recognition_response1_data, example={"access_token": "access_token"}
         ),
     },
 )
@@ -135,7 +147,9 @@ class face_recognition(Resource):
 
         try:
             target_embedding = get_target_embedding(f)
+
             results = search_similar_images(target_embedding)
+
             res = {}
             for result in results:
                 final_result = verify(target_embedding, result["image"])
@@ -145,10 +159,19 @@ class face_recognition(Resource):
                     break
             if final_result:
                 print("Face verification succeeded.")
+                payload = {"id": res["user_id"]}
+                access_token = generate_token(payload, "access")
+                payload = {}
+                refresh_token = generate_token(payload, "refresh")
                 response = {
                     "result": "SUCCESS_LOGIN",
                     "msg": "얼굴 인식 성공 및 로그인 성공하였습니다.",
-                    "data": {"user_id": res["user_id"]},
+                    # "data": {"user_id": res["user_id"]},
+                    "data": {
+                        "user_id": res["user_id"],
+                        "access_token": access_token,
+                        "refresh_token": refresh_token,
+                    },
                 }
                 return make_response(jsonify(response), 200)
             else:

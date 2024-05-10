@@ -246,9 +246,7 @@ class add_point(Resource):
 point_add_using_id_fields = Point.model(
     "Point_add_using_id_request",
     {  # Model 객체 생성
-        "access_token": fields.String(
-            description="an access token", required=True, example="access token"
-        ),
+        "user_id": fields.String(description="an ID", required=True, example="ID"),
         "point": fields.Integer(description="a point", required=True, example=20),
     },
 )
