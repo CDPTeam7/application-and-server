@@ -142,9 +142,6 @@ class check_point_using_id(Resource):
 point_add_fields = Point.model(
     "Point_add_request",
     {  # Model 객체 생성
-        "access_token": fields.String(
-            description="an access token", required=True, example="access_token"
-        ),
         "point": fields.Integer(description="a point", required=True, example=20),
     },
 )
@@ -182,12 +179,12 @@ class add_point(Resource):
     @Point.response(200, "success", point_add_response1)
     @Point.response(400, "fail", point_add_response2)
     @Point.response(401, "fail", point_add_response3)
+    @token_required
     def post(self):
         """요청한 포인트만큼 적립합니다 - token 사용"""
         req = request.get_json()
-        token_receive = req["access_token"]
         point_receive = req["point"]
-        payload = check_access_token(token_receive)
+        payload = get_payload_from_header()
         if payload == None:
             return make_response(
                 jsonify(
