@@ -1,4 +1,4 @@
-## poetry 설치
+## pipenv 설치
 
 - macOS: $ brew install pipenv
 - linux: $ pip3 install pipenv
