@@ -5,7 +5,7 @@ import cv2
 from ultralytics import YOLO
 import torch
 
-pet_model = YOLO("./model/best.pt")
+pet_model = YOLO("./server/model/best.pt")
 
 classNames = [
     "0",
@@ -42,12 +42,14 @@ def image_detection(image_path):
     img = cv2.imread(image_path)
     img = cv2.resize(img, (640, 640))
     # 추론 실행
+    """
     if torch.cuda.is_available():  # CUDA 지원하는 gpu(Nvidia gpu)있는 경우 gpu 사용
         results = pet_model.predict(img, device="0")
     else:
         results = pet_model.predict(img, device="cpu")
     # ----------------------------------------------------------------------#
-    # results = pet_model.predict(img, device="cpu")
+    """
+    results = pet_model.predict(img, device="cpu")
 
     target_count = 0  # number of target plastic bottle
 
