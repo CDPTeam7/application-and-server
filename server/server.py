@@ -1,5 +1,5 @@
 # from flask_cors import CORS # CORS 미들웨어를 위한 모듈
-from flask import Flask, request, jsonify  # flask 관련 라이브러리
+from flask import Flask, redirect, request, jsonify  # flask 관련 라이브러리
 from flask_restx import (
     Api,
     Resource,
@@ -14,6 +14,12 @@ from ranking import Ranking
 from image import Image
 from ai_service import Ai_service
 import os
+import ssl
+
+
+load_dotenv()
+SSL_PASSWORD = os.environ.get("SSL_PASSWORD")
+
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -88,5 +94,18 @@ class receive_data(Resource):
         return jsonify(response_data)
 
 
+@app.before_request
+def before_request():
+    scheme = request.headers.get("X-Forwarded-Proto")
+    if scheme and scheme == "http" and request.url.startswith("http://"):
+        url = request.url.replace("http://", "https://", 1)
+        code = 301
+        return redirect(url, code=code)
+
+
 if __name__ == "__main__":  # 이 파일이 직접 실행되야만 해당 코드 실행
-    app.run("0.0.0.0", port=8080, debug=True)
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+    ssl_context.load_cert_chain(
+        certfile="./cert.pem", keyfile="./key.pem", password=SSL_PASSWORD
+    )
+    app.run("0.0.0.0", port=8080, debug=True, ssl_context=ssl_context)

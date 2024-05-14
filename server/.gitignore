@@ -7,3 +7,7 @@ model/
 test.py
 test2.py
 makedata.py
+APIcall.py
+
+cert.pem
+key.pem
