@@ -137,7 +137,7 @@ face_recognition_response3 = Ai_service.model(
 class face_recognition(Resource):
     @Ai_service.expect(face_recognition_fields)
     @Ai_service.response(200, "success", face_recognition_response1)
-    @Ai_service.response(202, "success", face_recognition_response2)
+    @Ai_service.response(404, "success", face_recognition_response2)
     @Ai_service.response(400, "fail", face_recognition_response3)
     def post(self):
         """입력된 얼굴 이미지에 대해 인증을 확인하여 로그인 여부를 구해줍니다."""
@@ -180,7 +180,7 @@ class face_recognition(Resource):
                     "result": "ERROR_FAIL_LOGIN",
                     "msg": "얼굴 인식 성공 및 로그인 실패하였습니다.",
                 }
-                return make_response(jsonify(response), 202)
+                return make_response(jsonify(response), 404)
         except Exception as e:
             print(e)
             print("No face detected in the target imaget or Error occured.")
