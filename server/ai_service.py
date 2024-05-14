@@ -180,7 +180,7 @@ class face_recognition(Resource):
                     "result": "ERROR_FAIL_LOGIN",
                     "msg": "얼굴 인식 성공 및 로그인 실패하였습니다.",
                 }
-                return make_response(jsonify(response), 202)
+                return make_response(jsonify(response), 402)
         except Exception as e:
             print(e)
             print("No face detected in the target imaget or Error occured.")

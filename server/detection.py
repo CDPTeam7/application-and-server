@@ -148,14 +148,15 @@ def verify(target, candidate):
     result = DeepFace.verify(
         img1_path=target,
         img2_path=candidate,
-        model_name="ArcFace",
-        detector_backend="opencv",
+        model_name="Facenet512",
+        detector_backend="retinaface",
         distance_metric="cosine",
-        enforce_detection=True,
+        enforce_detection=False,
         align=True,
         expand_percentage=0,
         normalization="base",
         silent=False,
+        # threshold = 0.5
     )
 
     return result["verified"]
