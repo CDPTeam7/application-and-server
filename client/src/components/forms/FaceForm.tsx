@@ -4,6 +4,8 @@ import CameraIcon from "@mui/icons-material/Camera";
 import UploadIcon from "@mui/icons-material/Upload";
 import { ThemeSheet } from "@/theme/ThemeSheet";
 import { SignUpStep } from "@/pages/Signup";
+import { useState } from "react";
+import CameraModal from "../common/CameraModal";
 
 const buttonStyle = css`
   & button {
@@ -46,6 +48,7 @@ interface FaceFormProps {
 }
 
 export default function FaceForm(props: FaceFormProps) {
+  const [show, setShow] = useState<boolean>(false);
   // 카메라로 사진을 받아오기
   const handleButtonClick = (_e: any) => {
     props.setStep(1);
@@ -61,7 +64,14 @@ export default function FaceForm(props: FaceFormProps) {
         <UploadIcon />
         <span>인식 가능한 얼굴 업로드</span>
       </Button>
-      <div className={buttonStyle}>
+      <CameraModal
+        isShow={show}
+        setShow={setShow}
+        clickEventHandler={() => {
+          props.setStep(1);
+        }}
+      />
+      <div className={buttonStyle} onClick={() => setShow(true)}>
         <Button variant="contained" disabled>
           얼굴 등록이 필요해요.
         </Button>

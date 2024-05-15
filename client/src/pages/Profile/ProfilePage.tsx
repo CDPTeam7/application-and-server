@@ -10,6 +10,8 @@ import CameraIcon from "@mui/icons-material/Camera";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/stores/useAuthStore";
+import CameraModal from "@/components/common/CameraModal";
+import { useState } from "react";
 
 const uploadBarStyle = css`
   display: flex;
@@ -32,6 +34,7 @@ const uploadBarStyle = css`
 `;
 
 export default function ProfilePage() {
+  const [show, setShow] = useState(true);
   const currentUser = useAuthStore((state) => state.currentUser);
   const navigate = useNavigate();
   return (
@@ -49,10 +52,11 @@ export default function ProfilePage() {
           <CameraIcon />
           <span>카메라 촬영하기</span>
         </Button>
-        <Button className={uploadBarStyle}>
+        <Button className={uploadBarStyle} onClick={() => setShow(true)}>
           <UploadIcon />
           <span>인식 가능한 얼굴 업로드</span>
         </Button>
+        <CameraModal isShow={show} setShow={setShow} clickEventHandler={() => {}} />
         <Typography variant="h6" sx={{ marginTop: "16px" }}>
           내 정보 수정하기
         </Typography>
