@@ -6,3 +6,6 @@
 
 static/
 docker-compose.yml
+
+cert.pem
+key.pem
