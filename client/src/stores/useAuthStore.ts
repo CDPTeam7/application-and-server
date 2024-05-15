@@ -1,7 +1,7 @@
 // 로그인 기능 저장
 
 import { create } from "zustand";
-import { requestCheckToken, requestLogin, requestSignUp } from "@/api";
+import { SignUpParam, requestCheckUserInfo, requestLogin, requestLogout, requestModifyUserInfo, requestSignUp } from "@/api";
 import { TOKEN_ACCESS_ID, TOKEN_REFRESH_ID, removeCookie, setCookie } from "@/utils/cookie";
 import { AxiosResponse } from "axios";
 
@@ -11,6 +11,7 @@ export interface User {
   id: string;
   nickname: string;
   region: string;
+  area: string;
 }
 
 // 인터페이스 정의
@@ -18,7 +19,7 @@ interface AuthState {
   loginState: LoginState;
   currentUser: User | null; // 현재 로그인된 유저의 정보, 로그인 되어있지 않다면 null 이다.
   login: (id: string, password: string) => Promise<AxiosResponse>;
-  signUp: (id: string, password: string) => Promise<AxiosResponse>;
+  signUp: (data: SignUpParam) => Promise<AxiosResponse>;
   checkToken: () => Promise<AxiosResponse>;
   logout: () => void;
 }
@@ -41,14 +42,15 @@ const useAuthStore = create<AuthState>((set) => ({
    */
   login: async (id: string, password: string) => {
     try {
-      const res = (await requestLogin(id, password)) as AxiosResponse;
+      const res = await requestLogin(id, password);
 
       // set cookie for this user
       set({
         currentUser: {
           id,
-          nickname: "nickname", // api로부터 가져와야합니다.
-          region: "region", // api로부터 가져와야합니다.
+          nickname: res.data.nickname,
+          region: res.data.regionName,
+          area: res.data.areaName,
         },
       });
 
@@ -58,7 +60,7 @@ const useAuthStore = create<AuthState>((set) => ({
       return res;
     } catch (err) {
       console.log("로그인 실패");
-      return err as AxiosResponse;
+      throw err;
     }
   },
 
@@ -66,10 +68,7 @@ const useAuthStore = create<AuthState>((set) => ({
    * 로그아웃을 합니다.
    * state.currentUser 가 null 로 변합니다.
    */
-  logout: () => {
-    removeCookie("id");
-    set({ currentUser: null });
-  },
+  logout: async () => {},
 
   /**
    * 아이디, 닉네임, 비밀번호, 지역정보 등을 바탕으로 회원을 등록합니다.
@@ -79,14 +78,15 @@ const useAuthStore = create<AuthState>((set) => ({
    * @param region 지역정보
    * @returns
    */
-  signUp: async (id: string, password: string) => {
-    const res = await requestSignUp(id, password);
-    if (res.data.result === "success") {
-      console.log("회원가입 성공?");
-    } else {
-      console.log("회원가입 실패");
+  signUp: async (data: SignUpParam) => {
+    try {
+      const signUpResponse = await requestSignUp(data);
+      console.log("회원 가입 중...");
+
+      return signUpResponse;
+    } catch (e) {
+      throw e;
     }
-    return res;
   },
 
   /**
@@ -100,18 +100,22 @@ const useAuthStore = create<AuthState>((set) => ({
    */
   checkToken: async () => {
     try {
-      const res = await requestCheckToken();
-      console.log("토큰 확인 성공");
+      const res = await requestCheckUserInfo();
+
       set({
         currentUser: {
-          id: "admin",
-          nickname: "admin",
-          region: res.data.result.region ?? "undefined",
+          id: "id",
+          nickname: res.data.data.nickname ?? "nickname",
+          region: res.data.data.regionName,
+          area: res.data.data.areaName,
         },
         loginState: "finish",
       });
+      console.log("토큰 확인 성공");
       return res;
     } catch (e) {
+      console.log("토큰 확인 실패 : 클라이언트 에러");
+      console.log(e);
       set({ currentUser: null, loginState: "finish" });
       return e as AxiosResponse;
     }

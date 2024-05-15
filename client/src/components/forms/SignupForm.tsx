@@ -1,10 +1,12 @@
+import { SignUpParam } from "@/api";
 import { ErrorType, useErrorMessage } from "@/hooks/useErrorMessage";
-import SignupFinish from "@/pages/Signup/SignupFinish";
+import { SignUpStep } from "@/pages/Signup";
 import { ThemeSheet } from "@/theme/ThemeSheet";
+import { getAreaName, getRegionName } from "@/types/Region";
 import { css } from "@linaria/core";
-import { Button, TextField } from "@mui/material";
-import { AxiosResponse } from "axios";
-import { useRef } from "react";
+import { Autocomplete, Button, TextField } from "@mui/material";
+import { AxiosError, AxiosResponse } from "axios";
+import { useRef, useState } from "react";
 
 const buttonStyle = css`
   margin: 2rem;
@@ -28,57 +30,87 @@ const textFieldStyle = css`
 `;
 
 interface SignupFormProps {
-  requestSignUp: (id: string, pw: string) => Promise<AxiosResponse>;
-  setStep: React.Dispatch<number>;
+  requestSignUp: (data: SignUpParam) => Promise<AxiosResponse>;
+  setStep: React.Dispatch<SignUpStep>;
 }
 
 interface FormState extends ErrorType {
-  SUCCESS: 202;
-  ERROR_ID_EXIST: 401;
-  ERROR_PW_NOT_MATCH: 900;
+  SUCCESS: "SUCCESS";
+  ERR_PW_NOT_MATCH: "ERR_PW_NOT_MATCH";
+  ERR_ID_EXIST: "ERROR_ID_EXIST";
+  ERR_AREA_NOT_SET: "ERR_AREA_NOT_SET";
+  ERR_REGION_NOT_SET: "ERR_REGION_NOT_SET";
 }
 
 const FORM_STATE: FormState = {
-  SUCCESS: 202,
-  ERROR_ID_EXIST: 401,
-  ERROR_PW_NOT_MATCH: 900,
-  INITIAL: 0,
-  NOT_FOUND: 404,
-  INTERNAL_SERVER_ERROR: 500,
+  INITIAL: "INITIAL",
+  NOT_FOUND: "ERR_NOT_FOUND",
+  INTERNAL_SERVER_ERROR: "ERR_SERVER",
+  SUCCESS: "SUCCESS",
+  ERR_PW_NOT_MATCH: "ERR_PW_NOT_MATCH",
+  ERR_ID_EXIST: "ERROR_ID_EXIST",
+  ERR_AREA_NOT_SET: "ERR_AREA_NOT_SET",
+  ERR_REGION_NOT_SET: "ERR_REGION_NOT_SET",
 };
 
-type FormObject = "password" | "id" | "passwordCheck";
+type FormObject = "password" | "id" | "passwordCheck" | "region" | "area";
 
 const formStateMsg: Record<keyof FormState, Record<FormObject, string>> = {
   SUCCESS: {
     id: "",
     password: "",
     passwordCheck: "",
+    region: "",
+    area: "",
   },
-  ERROR_ID_EXIST: {
+  ERR_ID_EXIST: {
     password: "",
     id: "존재하는 아이디입니다.",
     passwordCheck: "",
+    region: "",
+    area: "",
   },
-  ERROR_PW_NOT_MATCH: {
+  ERR_PW_NOT_MATCH: {
     password: "",
     id: "",
     passwordCheck: "패스워드가 맞지 않습니다.",
+    region: "",
+    area: "",
   },
   INITIAL: {
     password: "",
     id: "",
     passwordCheck: "",
+    region: "",
+    area: "",
   },
   NOT_FOUND: {
     password: "",
     id: "존재하지 않는 요청입니다. 개발자에게 문의하세요.",
     passwordCheck: "",
+    region: "",
+    area: "",
   },
   INTERNAL_SERVER_ERROR: {
     password: "",
     id: "",
     passwordCheck: "",
+    region: "",
+    area: "",
+  },
+  ERR_AREA_NOT_SET: {
+    area: "현재 거주 중인 지역구를 선택해주세요.",
+    password: "",
+    id: "",
+    passwordCheck: "",
+    region: "",
+  },
+  ERR_REGION_NOT_SET: {
+    password: "",
+    id: "",
+    passwordCheck: "",
+    region: "현재 거주 중인 시를 선택해주세요.",
+    area: "",
   },
 };
 
@@ -87,34 +119,60 @@ export default function SignupForm(props: SignupFormProps) {
   const nickname = useRef("");
   const pw = useRef("");
   const pwCheck = useRef("");
+  const region = useRef<string | null>(null);
+  const area = useRef<string | null>(null);
+
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const { requestSignUp, setStep } = props;
 
-  const { setErrorState, errorState, errorText } = useErrorMessage<FormState, FormObject>(formStateMsg);
+  const { setErrorState, errorText } = useErrorMessage<FormState, FormObject>(formStateMsg);
 
   const handleSignUp = async () => {
-    console.log("test");
-
     if (pw.current !== pwCheck.current) {
-      console.log("비밀번호가 일치하지 않습니다.");
-      setErrorState("ERROR_PW_NOT_MATCH");
+      setErrorState("ERR_PW_NOT_MATCH");
       return;
     }
 
-    console.log("request start");
+    if (region.current === null) {
+      setErrorState("ERR_REGION_NOT_SET");
+      return;
+    }
+
+    if (area.current === null) {
+      setErrorState("ERR_AREA_NOT_SET");
+      return;
+    }
 
     try {
       // 얼굴 등록을 하기
-      // await requestSignUp(id.current, pw.current);
-      setErrorState("SUCCESS");
-      setStep(1);
-    } catch (err) {
-      const response = err as AxiosResponse;
-      if (response?.status === FORM_STATE.ERROR_ID_EXIST) {
-        setErrorState("ERROR_ID_EXIST");
+      if (region.current === null) {
+        throw Error("Region not set");
+      }
+      if (area.current === null) {
+        throw Error("Area not set");
       }
 
-      if (response?.status === FORM_STATE.INTERNAL_SERVER_ERROR) {
-        console.error("서버 측 에러가 발생했습니다.");
+      await requestSignUp({
+        id: id.current,
+        password: pw.current,
+        nickname: nickname.current,
+        region: region.current,
+        area: area.current,
+      });
+
+      setErrorState("SUCCESS");
+      setStep(2);
+    } catch (err) {
+      const response = err as AxiosError<{ result: string }>;
+      if (response.response) {
+        const ret = response.response.data.result;
+        if (ret === FORM_STATE.ERR_ID_EXIST) {
+          setErrorState("ERR_ID_EXIST");
+        }
+
+        if (ret === FORM_STATE.ERR_PW_NOT_MATCH) {
+          console.error("서버 측 에러가 발생했습니다.");
+        }
       }
     }
   };
@@ -125,14 +183,9 @@ export default function SignupForm(props: SignupFormProps) {
     }
   };
 
-  if (errorState === "SUCCESS") {
-    return <SignupFinish />;
-  }
-
   return (
     <div onKeyDown={handleKeyDown}>
       <TextField
-        // title={"아이디"}
         error={errorText.id.length !== 0}
         helperText={errorText.id}
         label="아이디"
@@ -150,6 +203,39 @@ export default function SignupForm(props: SignupFormProps) {
         className={textFieldStyle}
         id="signup-nickname"
         onChange={(e) => (nickname.current = e.target.value)}
+      />
+      <Autocomplete
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            helperText={errorText.region}
+            error={errorText.region.length !== 0}
+            variant="standard"
+            label="내 시"
+          />
+        )}
+        options={getRegionName()}
+        className={textFieldStyle}
+        onChange={(_e, value) => {
+          region.current = value;
+          setSelectedRegion(value);
+        }}
+      />
+      <Autocomplete
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            helperText={errorText.area}
+            error={errorText.area.length !== 0}
+            variant="standard"
+            label="내 구"
+          />
+        )}
+        options={selectedRegion === null ? [] : getAreaName(selectedRegion)}
+        className={textFieldStyle}
+        onChange={(_e, value) => {
+          area.current = value;
+        }}
       />
       <TextField
         // title={"비밀번호"}\

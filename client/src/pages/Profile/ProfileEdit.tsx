@@ -6,7 +6,11 @@ import PageCard from "../../components/common/PageCard";
 import { ThemeSheet } from "@/theme/ThemeSheet";
 import useAuthStore from "@/stores/useAuthStore";
 import useProfile from "@/hooks/useProfile";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import SubPage from "@/components/SubPage";
+import LoginCheckContainer from "@/containers/LoginCheckContainer";
+import SignUpForm from "@/components/forms/SignUpForm";
+import { getAreaName, getRegionName } from "@/types/Region";
 
 const textFieldStyle = css`
   margin-top: 1.2rem !important;
@@ -40,51 +44,58 @@ const profileStyle = css`
 
 export default function ProfileEdit() {
   const currentUser = useAuthStore((state) => state.currentUser);
-  const { nickname, region, changeProfile } = useProfile();
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const { nickname, setNickname, setRegion, region, area, setArea, changeProfile } = useProfile();
+
+  const handleChangeProfile = () => {
+    if (region === null) return;
+    if (area === null) return;
+    if (nickname === null) return;
+    changeProfile({
+      region,
+      area,
+      nickname,
+    });
+  };
 
   return (
-    <PageContainer>
-      <PageCard className={cardStyle}>
-        <Box className={profileStyle}>
-          <Badge
-            sx={{ mb: "16px" }}
-            overlap="circular"
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            badgeContent={
-              <EditIcon
-                sx={{
-                  borderRadius: "50%",
-                  padding: "3px",
-                  background: "black",
-                  color: "white",
-                }}
-              />
-            }
-          >
-            <Avatar alt="User" src="/static/images/avatar/1.jpg" sx={{ width: 128, height: 128 }} />
-          </Badge>
-        </Box>
+    <LoginCheckContainer shouldLogin={true}>
+      <SubPage title={"내 정보 수정"}>
         <Box sx={{ margin: "8px" }}>
           <TextField
             variant="standard"
-            onChange={(e) => (nickname.current = e.target.value)}
-            value={nickname.current}
+            onChange={(e) => setNickname(e.target.value)}
+            value={nickname}
             label="이름"
             className={textFieldStyle}
           />
           <Autocomplete
-            renderInput={(params) => <TextField {...params} variant="standard" label="내 지역" />}
-            options={["대구"]}
+            renderInput={(params) => <TextField {...params} variant="standard" label="내 시" />}
+            options={getRegionName()}
             className={textFieldStyle}
+            value={region}
+            onChange={(_e, value) => {
+              setRegion(value);
+              setSelectedRegion(value);
+            }}
+          />
+          <Autocomplete
+            renderInput={(params) => <TextField {...params} variant="standard" label="내 구" />}
+            options={selectedRegion === null ? [] : getAreaName(selectedRegion)}
+            value={area}
+            className={textFieldStyle}
+            onChange={(_e, value) => {
+              setArea(value);
+            }}
           />
         </Box>
         <CardActions>
-          <Button variant="contained" onClick={() => {}}>
+          <Button variant="contained" onClick={handleChangeProfile}>
             {/* changeProfile 을 이용하여 적용 */}
             저장
           </Button>
         </CardActions>
-      </PageCard>
-    </PageContainer>
+      </SubPage>
+    </LoginCheckContainer>
   );
 }

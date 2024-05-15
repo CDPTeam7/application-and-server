@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
 
 export interface ErrorType {
-  INITIAL: 0;
-  NOT_FOUND: 404;
-  INTERNAL_SERVER_ERROR:500;
+  INITIAL: "INITIAL";
+  NOT_FOUND: "ERR_NOT_FOUND";
+  INTERNAL_SERVER_ERROR: "ERR_SERVER";
 }
 
-export const useErrorMessage = <
-  ErrorStatus extends ErrorType,
-  ErrorObject extends string
->(
+export const useErrorMessage = <ErrorStatus extends ErrorType, ErrorObject extends string>(
   errorMessageList: Record<keyof ErrorStatus, Record<ErrorObject, string>>
 ) => {
   const [errorState, setErrorState] = useState<keyof ErrorStatus>("INITIAL");

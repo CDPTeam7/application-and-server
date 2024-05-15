@@ -31,41 +31,29 @@ const buttonStyle = css`
 `;
 
 interface FormState extends ErrorType {
-  SUCCESS: 200;
-  PW_NOT_MATCH: 401;
+  SUCCESS: "SUCCESS";
+  PW_NOT_MATCH: "ERROR_PW_NOT_MATCH";
+  ERROR_ID_NOT_EXIST: "ERROR_ID_NOT_EXIST";
 }
 
 const FORM_STATE: FormState = {
-  SUCCESS: 200,
-  PW_NOT_MATCH: 401,
-  INITIAL: 0,
-  NOT_FOUND: 404,
-  INTERNAL_SERVER_ERROR: 500,
+  SUCCESS: "SUCCESS",
+  PW_NOT_MATCH: "ERROR_PW_NOT_MATCH",
+  ERROR_ID_NOT_EXIST: "ERROR_ID_NOT_EXIST",
+  INITIAL: "INITIAL",
+  NOT_FOUND: "ERR_NOT_FOUND",
+  INTERNAL_SERVER_ERROR: "ERR_SERVER",
 };
 
 type FormObject = "id" | "password";
 
 const errorMessage: Record<keyof FormState, Record<FormObject, string>> = {
-  PW_NOT_MATCH: {
-    id: "",
-    password: "비밀번호가 일치하지 않습니다.",
-  },
-  INITIAL: {
-    id: "",
-    password: "",
-  },
-  NOT_FOUND: {
-    id: "",
-    password: "",
-  },
-  INTERNAL_SERVER_ERROR: {
-    id: "",
-    password: "",
-  },
-  SUCCESS: {
-    id: "",
-    password: "",
-  },
+  SUCCESS: { id: "", password: "" },
+  ERROR_ID_NOT_EXIST: { id: "아이디가 존재하지 않습니다.", password: "" },
+  INITIAL: { id: "", password: "" },
+  PW_NOT_MATCH: { id: "", password: "비밀번호가 일치하지 않습니다." },
+  NOT_FOUND: { id: "", password: "" },
+  INTERNAL_SERVER_ERROR: { id: "", password: "" },
 };
 
 interface LoginFormProps {
@@ -91,11 +79,11 @@ export default function LoginForm(props: LoginFormProps) {
       await props.requestLogin(id.current, pw.current);
       setErrorState("SUCCESS");
     } catch (err) {
-      console.log(err);
-      const axiosErr = err as AxiosError;
-      if (axiosErr.response?.status === FORM_STATE.PW_NOT_MATCH) {
-        console.log("TEST");
-        setErrorState("PW_NOT_MATCH");
+      console.log("aa");
+      const axiosErr = err as AxiosError<{ result: string }>;
+      if (axiosErr.response) {
+        if (axiosErr.response.data.result === FORM_STATE.PW_NOT_MATCH) setErrorState("PW_NOT_MATCH");
+        if (axiosErr.response.data.result === FORM_STATE.ERROR_ID_NOT_EXIST) setErrorState("ERROR_ID_NOT_EXIST");
       }
     }
   };

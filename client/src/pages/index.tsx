@@ -14,6 +14,7 @@ import CardContent from "@/components/common/CardContent";
 import EnergySavingsLeafIcon from "@mui/icons-material/EnergySavingsLeaf";
 import { usePoint } from "@/hooks/usePoint";
 import { stringifyNumber } from "@/utils/utility";
+import useAuthStore from "@/stores/useAuthStore";
 
 const cardMargin = css`
   margin-top: 16px;
@@ -21,12 +22,13 @@ const cardMargin = css`
 
 export function MainPage() {
   const { getCurrentPoint } = usePoint();
+  const currentUser = useAuthStore((state) => state.currentUser);
 
   return (
     <LoginCheckContainer shouldLogin={true}>
       <SubPage title="에코스">
         <Typography variant="subtitle2">돌아오신 것을 환영합니다!</Typography>
-        <Typography variant="h6">반갑습니다, 김찬우님!</Typography>
+        <Typography variant="h6">반갑습니다, {currentUser?.nickname}님!</Typography>
 
         <Card className={cardMargin}>
           <MainCardContent cardType="protection" />
@@ -48,7 +50,7 @@ export function MainPage() {
             icon={EnergySavingsLeafIcon}
             subtitle={`다함께 재활용 실천`}
             title={`개인/지역 순위 보러가기`}
-            navigateTo="/ranking"
+            navigateTo="/rank"
           />
         </Card>
 

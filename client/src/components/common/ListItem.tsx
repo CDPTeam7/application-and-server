@@ -1,5 +1,6 @@
 import { ThemeSheet } from "@/theme/ThemeSheet";
 import { css } from "@linaria/core";
+import Deriv from "./Deriv";
 
 const wrapStyle = css`
   width: auto;
@@ -35,12 +36,13 @@ const wrapStyle = css`
 `;
 
 interface ListItemProps {
-  date?: Date;
+  date?: string;
   title: string;
   description?: string;
   value: string;
   valueClass?: string;
   className?: string;
+  deriv?: number;
 }
 
 /**
@@ -49,7 +51,7 @@ interface ListItemProps {
 export default function ListItem(props: ListItemProps) {
   return (
     <div className={`${wrapStyle} ${props.className}`}>
-      <div className="date">{props.date ? `${props.date.getMonth() + 1}.${props.date.getDate()}` : null}</div>
+      <div className="date">{props.date ? props.date : null}</div>
       <div className="content">
         <div className="article">
           <div className="title">{props.title}</div>
@@ -57,6 +59,7 @@ export default function ListItem(props: ListItemProps) {
         </div>
         <div className={`value ${props.valueClass}`}>{props.value}</div>
       </div>
+      {props.deriv !== undefined ? <Deriv deriv={props.deriv} /> : null}
     </div>
   );
 }

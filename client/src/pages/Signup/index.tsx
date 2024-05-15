@@ -1,8 +1,8 @@
 import useAuthStore from "@/stores/useAuthStore";
 import { useNavigate } from "react-router-dom";
-import SignupForm from "@/components/forms/SignupForm";
+import SignupForm from "@/components/forms/SignUpForm";
 import { css } from "@linaria/core";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useState } from "react";
 import FaceForm from "@/components/forms/FaceForm";
 import { ThemeSheet } from "@/theme/ThemeSheet";
@@ -28,23 +28,58 @@ const wrapStyle = css`
   animation: ease show-up 300ms;
 `;
 
+export enum SignUpStep {
+  FACE,
+  FORM,
+  FINISH,
+}
+
 export default function SignupPage() {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState<SignUpStep>(SignUpStep.FACE);
   const navigate = useNavigate();
   const requestSignUp = useAuthStore((state) => state.signUp);
-
+  const stepComponent = [
+    <FaceForm setStep={setStep} />,
+    <SignupForm requestSignUp={requestSignUp} setStep={setStep} />,
+    <SignUpFinish />,
+  ];
   return (
     <LoginCheckContainer shouldLogin={false}>
       <div className={wrapStyle}>
         <Typography variant="h1" sx={{ marginBottom: "24px" }}>
           회원가입
         </Typography>
-        {step === 0 ? <FaceForm setStep={setStep} /> : <SignupForm requestSignUp={requestSignUp} setStep={setStep} />}
-        <div style={{ margin: "32px" }} onClick={() => navigate("/login")}>
-          계정이 있으신가요?
-          <span style={{ marginLeft: "6px", color: ThemeSheet.Branded["600"] }}>돌아가기</span>
-        </div>
+        {stepComponent[step]}
+        {step !== SignUpStep.FINISH ? (
+          <div style={{ margin: "32px" }} onClick={() => navigate("/login")}>
+            계정이 있으신가요?
+            <span style={{ marginLeft: "6px", color: ThemeSheet.Branded["600"] }}>돌아가기</span>
+          </div>
+        ) : null}
       </div>
     </LoginCheckContainer>
+  );
+}
+
+function SignUpFinish() {
+  const navigate = useNavigate();
+  const wrapStyle = css`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    & > * {
+      margin-bottom: 16px !important;
+    }
+  `;
+  return (
+    <div className={wrapStyle}>
+      <Typography variant="h6"> 🎉 회원가입이 완료되었어요. 🎉 </Typography>
+      <Typography variant="subtitle1">로그인 화면으로 돌아가서 다시 로그인하세요.</Typography>
+      <div>
+        <Button variant="outlined" onClick={() => navigate("/login")}>
+          돌아가기
+        </Button>
+      </div>
+    </div>
   );
 }
