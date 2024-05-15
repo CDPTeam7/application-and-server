@@ -5,7 +5,7 @@ import cv2
 from ultralytics import YOLO
 import torch
 
-pet_model = YOLO("./server/model/best.pt")
+pet_model = YOLO("./model/best232.pt")
 
 classNames = [
     "0",
@@ -64,7 +64,8 @@ def image_detection(image_path):
             label = f"{class_name}_{conf}"
             t_size = cv2.getTextSize(label, 0, fontScale=1, thickness=2)[0]
             c2 = x1 + t_size[0], y1 - t_size[1] - 3
-            if class_name in ["2", "4", "6", "8", "10", "12"]:  # target plastic bottle
+            # if class_name in ["2", "4", "6", "8", "10", "12"]:  # target plastic bottle
+            if class_name == "0":  # target plastic bottle
                 target_count += 1
             """    color = (222, 82, 175)
             # elif class_name == "4": # other plastic bottle

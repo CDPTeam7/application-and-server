@@ -137,7 +137,7 @@ face_recognition_response3 = Ai_service.model(
 class face_recognition(Resource):
     @Ai_service.expect(face_recognition_fields)
     @Ai_service.response(200, "success", face_recognition_response1)
-    @Ai_service.response(404, "success", face_recognition_response2)
+    @Ai_service.response(404, "fail", face_recognition_response2)
     @Ai_service.response(400, "fail", face_recognition_response3)
     def post(self):
         """입력된 얼굴 이미지에 대해 인증을 확인하여 로그인 여부를 구해줍니다."""

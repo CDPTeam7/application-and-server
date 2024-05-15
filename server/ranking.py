@@ -87,9 +87,6 @@ class check_score(Resource):
 ranking_add_fields = Ranking.model(
     "Ranking_add_request",
     {  # Model 객체 생성
-        "access_token": fields.String(
-            description="an access token", required=True, example="access_token"
-        ),
         "score": fields.Integer(description="a score", required=True, example=20),
     },
 )
@@ -127,12 +124,13 @@ class add_score(Resource):
     @Ranking.response(200, "success", ranking_add_response1)
     @Ranking.response(400, "fail", ranking_add_response2)
     @Ranking.response(401, "fail", ranking_add_response3)
+    @token_required
     def post(self):
         """요청한 점수만큼 적립합니다 - token 사용"""
         req = request.get_json()
         token_receive = req["access_token"]
         score_receive = req["score"]
-        payload = check_access_token(token_receive)
+        payload = get_payload_from_header()
         if payload == None:
             return make_response(
                 jsonify(
