@@ -46,7 +46,7 @@ export default function CardContent(props: CardContentProps) {
         </div>
 
         {props.navigateTo !== undefined ? (
-          <Button onClick={() => navigate(props.navigateTo)}>
+          <Button onClick={() => navigate(props.navigateTo ?? "")}>
             <ArrowForwardIosIcon />
           </Button>
         ) : null}

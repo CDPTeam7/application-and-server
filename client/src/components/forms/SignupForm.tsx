@@ -32,6 +32,8 @@ const textFieldStyle = css`
 interface SignupFormProps {
   requestSignUp: (data: SignUpParam) => Promise<AxiosResponse>;
   setStep: React.Dispatch<SignUpStep>;
+  idRef: React.MutableRefObject<string>;
+  pwRef: React.MutableRefObject<string>;
 }
 
 interface FormState extends ErrorType {
@@ -115,9 +117,9 @@ const formStateMsg: Record<keyof FormState, Record<FormObject, string>> = {
 };
 
 export default function SignupForm(props: SignupFormProps) {
-  const id = useRef("");
+  const id = props.idRef;
+  const pw = props.pwRef;
   const nickname = useRef("");
-  const pw = useRef("");
   const pwCheck = useRef("");
   const region = useRef<string | null>(null);
   const area = useRef<string | null>(null);

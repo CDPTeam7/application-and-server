@@ -1,17 +1,15 @@
 import { css } from "@linaria/core";
 import { ThemeSheet } from "../../theme/ThemeSheet";
-import { Avatar, Box, Button, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import LoginCheckContainer from "@/containers/LoginCheckContainer";
-import EnergySavingsLeafIcon from "@mui/icons-material/EnergySavingsLeaf";
 import SubPage from "@/components/SubPage";
-import Card from "@/components/common/Card";
-import CardContent from "@/components/common/CardContent";
 import CameraIcon from "@mui/icons-material/Camera";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/stores/useAuthStore";
 import CameraModal from "@/components/common/CameraModal";
 import { useState } from "react";
+import { useWebcam } from "@/hooks/useWebcam";
 
 const uploadBarStyle = css`
   display: flex;
@@ -34,7 +32,8 @@ const uploadBarStyle = css`
 `;
 
 export default function ProfilePage() {
-  const [show, setShow] = useState(true);
+  const { setImage, saveImage, webcamRef } = useWebcam();
+  const [show, setShow] = useState(false);
   const currentUser = useAuthStore((state) => state.currentUser);
   const navigate = useNavigate();
   return (
@@ -56,7 +55,15 @@ export default function ProfilePage() {
           <UploadIcon />
           <span>인식 가능한 얼굴 업로드</span>
         </Button>
-        <CameraModal isShow={show} setShow={setShow} clickEventHandler={() => {}} />
+        <CameraModal
+          isShow={show}
+          setShow={setShow}
+          setImage={setImage}
+          saveImage={saveImage}
+          transactionType="set"
+          webcamRef={webcamRef}
+          clickEventHandler={() => {}}
+        />
         <Typography variant="h6" sx={{ marginTop: "16px" }}>
           내 정보 수정하기
         </Typography>

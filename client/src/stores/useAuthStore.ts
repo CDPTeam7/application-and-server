@@ -1,7 +1,7 @@
 // 로그인 기능 저장
 
 import { create } from "zustand";
-import { SignUpParam, requestCheckUserInfo, requestLogin, requestLogout, requestModifyUserInfo, requestSignUp } from "@/api";
+import { SignUpParam, requestCheckUserInfo, requestLogin, requestLogout, requestSignUp } from "@/api";
 import { TOKEN_ACCESS_ID, TOKEN_REFRESH_ID, removeCookie, setCookie } from "@/utils/cookie";
 import { AxiosResponse } from "axios";
 
@@ -68,7 +68,17 @@ const useAuthStore = create<AuthState>((set) => ({
    * 로그아웃을 합니다.
    * state.currentUser 가 null 로 변합니다.
    */
-  logout: async () => {},
+  logout: async () => {
+    try {
+      requestLogout();
+
+      removeCookie(TOKEN_ACCESS_ID);
+      removeCookie(TOKEN_REFRESH_ID);
+    } catch (err) {
+      console.log("로그인 실패");
+      throw err;
+    }
+  },
 
   /**
    * 아이디, 닉네임, 비밀번호, 지역정보 등을 바탕으로 회원을 등록합니다.

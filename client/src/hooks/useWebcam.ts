@@ -8,15 +8,22 @@ import Webcam from "react-webcam";
 
 export const useWebcam = () => {
   const webcamRef = useRef<Webcam>(null);
-  const setImage = () => {
+  let currentImage: File | null | undefined;
+
+  const saveImage = () => {
     if (webcamRef.current === null) return;
-    const file = base64ToFile(webcamRef.current.getScreenshot(), "recognition.png");
-    console.log(file);
-    requestSetImage(file);
+    currentImage = base64ToFile(webcamRef.current.getScreenshot(), "recognition.png");
+  };
+
+  const setImage = () => {
+    if (currentImage == undefined || currentImage == null) saveImage();
+    if (currentImage == null) return;
+    requestSetImage(currentImage);
   };
 
   return {
     webcamRef,
+    saveImage,
     setImage,
   };
 };

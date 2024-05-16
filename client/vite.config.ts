@@ -3,10 +3,12 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import wyw from "@wyw-in-js/vite";
 import { VitePWA } from "vite-plugin-pwa";
+import basicSsl from "@vitejs/plugin-basic-ssl";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    basicSsl(),
     react(),
     wyw({
       include: ["**/*.{ts,tsx}"],
@@ -52,15 +54,18 @@ export default defineConfig({
   server: {
     proxy: {
       "/hello": {
-        target: "http://localhost:8080", // Flask 애플리케이션의 주소
+        target: "https://localhost:8080", // Flask 애플리케이션의 주소
+        secure: false,
         changeOrigin: true,
       },
       "/hello(.*)": {
-        target: "http://localhost:8080", // Flask 애플리케이션의 주소
+        target: "https://localhost:8080", // Flask 애플리케이션의 주소
+        secure: false,
         changeOrigin: true,
       },
       "/api": {
-        target: "http://localhost:8080", // Flask 애플리케이션의 주소
+        target: "https://localhost:8080", // Flask 애플리케이션의 주소
+        secure: false,
         changeOrigin: true,
       },
     },

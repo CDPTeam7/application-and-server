@@ -4,7 +4,6 @@ import { css } from "@linaria/core";
 import { useRef } from "react";
 import { ErrorType, useErrorMessage } from "@/hooks/useErrorMessage";
 import { AxiosError, AxiosResponse } from "axios";
-import { useNavigate } from "react-router-dom";
 import { ThemeSheet } from "@/theme/ThemeSheet";
 
 const textFieldStyle = css`
@@ -61,7 +60,7 @@ interface LoginFormProps {
 }
 
 export default function LoginForm(props: LoginFormProps) {
-  const navigate = useNavigate();
+  // const _navigate = useNavigate();
 
   const id = useRef("");
   const pw = useRef("");
