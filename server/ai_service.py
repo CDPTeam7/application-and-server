@@ -67,7 +67,7 @@ class pet_recognition(Resource):
         frame.save("./static/pet-recog/" + secure_filename(str(frame.filename)))
         frame_path = "./static/pet-recog/" + secure_filename(str(frame.filename))
         try:
-            result = image_detection(frame_path)
+            result = image_detection(frame_path, "./static/results/")
             return make_response(
                 jsonify(
                     {

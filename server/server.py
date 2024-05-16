@@ -94,6 +94,7 @@ class receive_data(Resource):
         return jsonify(response_data)
 
 
+"""
 @app.before_request
 def before_request():
     scheme = request.headers.get("X-Forwarded-Proto")
@@ -101,11 +102,12 @@ def before_request():
         url = request.url.replace("http://", "https://", 1)
         code = 301
         return redirect(url, code=code)
-
+"""
 
 if __name__ == "__main__":  # 이 파일이 직접 실행되야만 해당 코드 실행
-    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+    """ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     ssl_context.load_cert_chain(
         certfile="./cert.pem", keyfile="./key.pem", password=SSL_PASSWORD
-    )
-    app.run("0.0.0.0", port=8080, debug=True, ssl_context=ssl_context)
+    )"""
+    # app.run("0.0.0.0", port=8080, debug=True, ssl_context=ssl_context)
+    app.run("0.0.0.0", port=8080, debug=True)
