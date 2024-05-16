@@ -1,15 +1,9 @@
-import { Autocomplete, Avatar, Badge, Box, Button, CardActions, TextField, Typography } from "@mui/material";
-import { PageContainer } from "../../components/common/PageContainer";
-import EditIcon from "@mui/icons-material/Edit";
+import { Autocomplete, Box, Button, CardActions, TextField } from "@mui/material";
 import { css } from "@linaria/core";
-import PageCard from "../../components/common/PageCard";
-import { ThemeSheet } from "@/theme/ThemeSheet";
-import useAuthStore from "@/stores/useAuthStore";
 import useProfile from "@/hooks/useProfile";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import SubPage from "@/components/SubPage";
 import LoginCheckContainer from "@/containers/LoginCheckContainer";
-import SignUpForm from "@/components/forms/SignUpForm";
 import { getAreaName, getRegionName } from "@/types/Region";
 
 const textFieldStyle = css`
@@ -23,27 +17,7 @@ const textFieldStyle = css`
   }
 `;
 
-const cardStyle = css`
-  margin: 1rem;
-`;
-
-const profileStyle = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  & h2 {
-    font-weight: 600;
-    font-size: 1.6rem;
-  }
-  & h3 {
-    color: ${ThemeSheet.Gray[400]};
-    font-size: 1.3rem;
-  }
-`;
-
 export default function ProfileEdit() {
-  const currentUser = useAuthStore((state) => state.currentUser);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const { nickname, setNickname, setRegion, region, area, setArea, changeProfile } = useProfile();
 

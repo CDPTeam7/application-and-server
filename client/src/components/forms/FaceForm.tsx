@@ -1,11 +1,12 @@
 import { css } from "@linaria/core";
 import { Button } from "@mui/material";
 import CameraIcon from "@mui/icons-material/Camera";
-import UploadIcon from "@mui/icons-material/Upload";
+// import UploadIcon from "@mui/icons-material/Upload";
 import { ThemeSheet } from "@/theme/ThemeSheet";
 import { SignUpStep } from "@/pages/Signup";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CameraModal from "../common/CameraModal";
+import Webcam from "react-webcam";
 
 const buttonStyle = css`
   & button {
@@ -45,35 +46,49 @@ const uploadBarStyle = css`
 
 interface FaceFormProps {
   setStep: React.Dispatch<SignUpStep>;
+  saveImage: () => void;
+  setImage: () => void;
+  webcamRef: React.LegacyRef<Webcam>;
 }
 
 export default function FaceForm(props: FaceFormProps) {
+  const { saveImage, setImage, webcamRef } = props;
   const [show, setShow] = useState<boolean>(false);
+  const didUpload = useRef<boolean>(false);
   // 카메라로 사진을 받아오기
   const handleButtonClick = (_e: any) => {
-    props.setStep(1);
+    setShow(true);
   };
   return (
     <>
       <div style={{ marginBottom: "2rem" }}>회수기 얼굴 인식을 위해 얼굴 등록이 필요해요.</div>
-      <Button className={uploadBarStyle}>
+      <Button className={uploadBarStyle} onClick={handleButtonClick}>
         <CameraIcon />
         <span>카메라 촬영하기</span>
       </Button>
-      <Button className={uploadBarStyle} onClick={handleButtonClick}>
+      {/* <Button className={uploadBarStyle} onClick={handleButtonClick}>
         <UploadIcon />
         <span>인식 가능한 얼굴 업로드</span>
-      </Button>
+      </Button> */}
       <CameraModal
         isShow={show}
         setShow={setShow}
         clickEventHandler={() => {
-          props.setStep(1);
+          didUpload.current = true;
         }}
+        transactionType={"save"}
+        setImage={setImage}
+        saveImage={saveImage}
+        webcamRef={webcamRef}
       />
-      <div className={buttonStyle} onClick={() => setShow(true)}>
-        <Button variant="contained" disabled>
-          얼굴 등록이 필요해요.
+      <div
+        className={buttonStyle}
+        onClick={() => {
+          if (didUpload.current) props.setStep(1);
+        }}
+      >
+        <Button variant="contained" disabled={!didUpload.current}>
+          {didUpload.current ? "다음" : "얼굴 등록이 필요해요."}
         </Button>
       </div>
     </>

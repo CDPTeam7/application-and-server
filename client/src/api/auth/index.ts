@@ -1,4 +1,5 @@
 import { axiosWithCookie } from "@/utils/axios";
+import { TOKEN_ACCESS_ID, getCookie } from "@/utils/cookie";
 import axios, { AxiosResponse } from "axios";
 
 // 로그인 시 패킷을 중간에 열어볼 수 있어서, RSA 암호화 필요
@@ -37,9 +38,9 @@ export function requestLogin(userId: string, password: string) {
   }) as Promise<AxiosResponse<LoginResponse>>;
 }
 
-export function requestLogout(accessToken: string) {
+export function requestLogout() {
   return axiosWithCookie.post("/api/auth/logout", {
-    access_token: accessToken,
+    access_token: getCookie(TOKEN_ACCESS_ID),
   });
 }
 

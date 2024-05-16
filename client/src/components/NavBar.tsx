@@ -1,12 +1,9 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import useAuthStore from "../stores/useAuthStore";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ThemeSheet } from "@/theme/ThemeSheet";
 import { css } from "@linaria/core";
 import { routes } from "@/routes";
 

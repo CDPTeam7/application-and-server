@@ -8,7 +8,7 @@ export * from "./history";
  * 해당 API는 회수기에서 재활용 인증 후 시현이 되어야 합니다.
  * @param point 더할 포인트 값
  */
-export function addPoint(point: number, id?: string) {
+export function addPoint(_point: number, _id?: string) {
   console.error("API not implemented");
 }
 

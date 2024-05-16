@@ -1,6 +1,6 @@
 import { requestModifyUserInfo } from "@/api";
 import useAuthStore from "@/stores/useAuthStore";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * 유저 정보를 확인 | 수정할 수 있습니다.

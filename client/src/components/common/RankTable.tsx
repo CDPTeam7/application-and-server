@@ -1,7 +1,6 @@
 import { stringifyNumber } from "@/utils/utility";
 // import { Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
 import ListItem from "./ListItem";
-import Deriv from "./Deriv";
 
 export function createRankRow(nickname: string, areaName: string, point: number, derivation: number) {
   return { nickname, areaName, point, derivation };

@@ -36,30 +36,38 @@ const Modal = styled.div<{ isShow: boolean }>`
     margin-top: 16px;
     color: white;
   }
+  & .cancel {
+    color: black;
+  }
 `;
 
 interface CameraModalProps {
   isShow: boolean;
   setShow: React.Dispatch<boolean>;
   clickEventHandler: Function;
+  transactionType: "set" | "save";
+  setImage: () => void;
+  saveImage: () => void;
+  webcamRef: React.LegacyRef<Webcam>;
 }
 
 export default function CameraModal(props: CameraModalProps) {
-  const { isShow, setShow, clickEventHandler } = props;
-  const { webcamRef, setImage } = useWebcam();
+  const { isShow, setShow, clickEventHandler, setImage, saveImage, transactionType, webcamRef } = props;
   const buttonClickHandler = () => {
     setShow(false);
     clickEventHandler();
-    setImage();
+    if (transactionType == "save") saveImage();
+    else setImage();
   };
+  if (!isShow) return <></>;
   return (
     <Modal isShow={isShow}>
       <div className="window">
-        <Webcam width={800} className="cam" ref={webcamRef} disabled={isShow} />
+        <Webcam width={800} className="cam" ref={webcamRef} />
         <Button className="button" variant="contained" onClick={buttonClickHandler}>
           사진 촬영
         </Button>
-        <Button className="button" variant="outlined" onClick={() => setShow(false)}>
+        <Button className="button cancel" variant="outlined" onClick={() => setShow(false)}>
           취소
         </Button>
       </div>

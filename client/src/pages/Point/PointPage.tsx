@@ -1,8 +1,5 @@
 import { ThemeSheet } from "../../theme/ThemeSheet";
-import useAuthStore from "../../stores/useAuthStore";
-import { Navigate } from "react-router-dom";
-import { List, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Typography } from "@mui/material";
 import PageCardDivider from "@/components/common/PageCardDivider";
 import { stringifyNumber } from "@/utils/utility";
 import SubPage from "@/components/SubPage";
@@ -11,14 +8,6 @@ import LoginCheckContainer from "@/containers/LoginCheckContainer";
 import { usePoint } from "@/hooks/usePoint";
 import { css } from "@linaria/core";
 import { lightGreen } from "@mui/material/colors";
-
-interface Column {
-  id: "date" | "place" | "point";
-  label: string;
-  maxWidth?: number;
-  align?: "right";
-  format?: (value: number) => string;
-}
 
 const wrapStyle = css`
   & .checkMore {
