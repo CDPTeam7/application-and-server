@@ -40,10 +40,10 @@ export default function RankingPage() {
           <Typography variant="subtitle2">내 순위</Typography>
           <Typography variant="h6" sx={{ fontSize: "1.5rem", marginBottom: "8px" }}>
             {myRank} 위
+            <Deriv deriv={deriv - myRank} />
           </Typography>
           <Typography variant="subtitle1" sx={{ marginBottom: "16px" }}>
             {stringifyNumber(getCurrentPoint())} 점
-            <Deriv deriv={deriv} />
           </Typography>
         </Box>
         <PersonalRank topRank={topRank} />

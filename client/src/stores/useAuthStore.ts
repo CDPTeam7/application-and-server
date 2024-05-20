@@ -44,6 +44,8 @@ const useAuthStore = create<AuthState>((set) => ({
     try {
       const res = await requestLogin(id, password);
 
+      setCookie(TOKEN_ACCESS_ID, res.data.access_token);
+      setCookie(TOKEN_REFRESH_ID, res.data.refresh_token);
       // set cookie for this user
       set({
         currentUser: {
@@ -53,9 +55,6 @@ const useAuthStore = create<AuthState>((set) => ({
           area: res.data.areaName,
         },
       });
-
-      setCookie(TOKEN_ACCESS_ID, res.data.access_token);
-      setCookie(TOKEN_REFRESH_ID, res.data.refresh_token);
 
       return res;
     } catch (err) {
@@ -74,6 +73,9 @@ const useAuthStore = create<AuthState>((set) => ({
 
       removeCookie(TOKEN_ACCESS_ID);
       removeCookie(TOKEN_REFRESH_ID);
+      set({
+        currentUser: null,
+      });
     } catch (err) {
       console.log("로그인 실패");
       throw err;
