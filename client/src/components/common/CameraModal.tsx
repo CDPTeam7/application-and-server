@@ -1,4 +1,3 @@
-import { useWebcam } from "@/hooks/useWebcam";
 import { styled } from "@linaria/react";
 import { Button } from "@mui/material";
 import Webcam from "react-webcam";

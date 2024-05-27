@@ -11,7 +11,7 @@ const wrapStyle = css`
   font-weight: 600;
   padding: 16px 0;
   & .rank {
-    width: 120px;
+    width: 100px;
   }
   & .content {
     flex: 1;

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SignupForm from "@/components/forms/SignupForm";
 import { css } from "@linaria/core";
 import { Button, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import FaceForm from "@/components/forms/FaceForm";
 import { ThemeSheet } from "@/theme/ThemeSheet";
 import LoginCheckContainer from "@/containers/LoginCheckContainer";
