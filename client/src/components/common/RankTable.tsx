@@ -14,7 +14,7 @@ export default function RankTable(props: TableProps) {
       <ListItem
         rank={`${value.rank}위`}
         title={value.nick}
-        description={value.areaName}
+        description={`${value.regionName} ${value.areaName}`}
         value={stringifyNumber(value.score)}
         deriv={value.rankDeriv - value.rank}
       />
