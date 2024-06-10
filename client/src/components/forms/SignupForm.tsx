@@ -42,6 +42,8 @@ interface FormState extends ErrorType {
   ERR_ID_EXIST: "ERROR_ID_EXIST";
   ERR_AREA_NOT_SET: "ERR_AREA_NOT_SET";
   ERR_REGION_NOT_SET: "ERR_REGION_NOT_SET";
+  ERR_PW_CONSTRAINT: "ERR_PW_CONSTRAINT";
+  ERR_ID_CONSTRAINT: "ERR_ID_CONSTRAINT";
 }
 
 const FORM_STATE: FormState = {
@@ -51,6 +53,8 @@ const FORM_STATE: FormState = {
   SUCCESS: "SUCCESS",
   ERR_PW_NOT_MATCH: "ERR_PW_NOT_MATCH",
   ERR_ID_EXIST: "ERROR_ID_EXIST",
+  ERR_PW_CONSTRAINT: "ERR_PW_CONSTRAINT",
+  ERR_ID_CONSTRAINT: "ERR_ID_CONSTRAINT",
   ERR_AREA_NOT_SET: "ERR_AREA_NOT_SET",
   ERR_REGION_NOT_SET: "ERR_REGION_NOT_SET",
 };
@@ -114,6 +118,20 @@ const formStateMsg: Record<keyof FormState, Record<FormObject, string>> = {
     region: "현재 거주 중인 시를 선택해주세요.",
     area: "",
   },
+  ERR_PW_CONSTRAINT: {
+    password: "비밀번호는 숫자, 영문이 최소 1개 이상 조합된 6-16자 입니다.",
+    id: "",
+    passwordCheck: "비밀번호는 숫자, 영문이 최소 1개 이상 조합된 6-16자 입니다.",
+    region: "",
+    area: "",
+  },
+  ERR_ID_CONSTRAINT: {
+    password: "",
+    id: "아이디는 숫자, 영문이 최소 1개 이상 조합된 6-16자 입니다.",
+    passwordCheck: "",
+    region: "",
+    area: "",
+  },
 };
 
 export default function SignupForm(props: SignupFormProps) {
@@ -130,6 +148,19 @@ export default function SignupForm(props: SignupFormProps) {
   const { setErrorState, errorText } = useErrorMessage<FormState, FormObject>(formStateMsg);
 
   const handleSignUp = async () => {
+    const regex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{6,16}$/;
+
+    if (!regex.test(id.current)) {
+      setErrorState("ERR_ID_CONSTRAINT");
+      return;
+    }
+
+    if (!regex.test(pw.current)) {
+      setErrorState("ERR_PW_CONSTRAINT");
+      console.log("PW_CONSTRAINT");
+      return;
+    }
+
     if (pw.current !== pwCheck.current) {
       setErrorState("ERR_PW_NOT_MATCH");
       return;
@@ -249,7 +280,7 @@ export default function SignupForm(props: SignupFormProps) {
         className={textFieldStyle}
         name={"pw"}
         id="signup-pw"
-        onChange={(e) => (pw.current = e.target.value)}
+        onChange={(e) => (pw.current = e.target.value.trim())}
       />
       <TextField
         // title={"비밀번호"}\
