@@ -143,6 +143,7 @@ export default function SignupForm(props: SignupFormProps) {
   const area = useRef<string | null>(null);
 
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const { requestSignUp, setStep } = props;
 
   const { setErrorState, errorText } = useErrorMessage<FormState, FormObject>(formStateMsg);
@@ -251,6 +252,8 @@ export default function SignupForm(props: SignupFormProps) {
         className={textFieldStyle}
         onChange={(_e, value) => {
           region.current = value;
+          area.current = "";
+          setSelectedArea(null);
           setSelectedRegion(value);
         }}
       />
@@ -266,8 +269,10 @@ export default function SignupForm(props: SignupFormProps) {
         )}
         options={selectedRegion === null ? [] : getAreaName(selectedRegion)}
         className={textFieldStyle}
+        inputValue={selectedArea ?? ""}
         onChange={(_e, value) => {
           area.current = value;
+          setSelectedArea(value);
         }}
       />
       <TextField
