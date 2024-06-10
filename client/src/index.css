@@ -13,9 +13,9 @@ body {
     "Noto Sans KR", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 
-/* #root {
-  overflow:hidden;
-} */
+#root {
+  overflow: hidden;
+}
 
 .transition-group {
   overflow: hidden;
