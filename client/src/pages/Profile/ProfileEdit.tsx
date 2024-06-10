@@ -5,6 +5,7 @@ import { useState } from "react";
 import SubPage from "@/components/SubPage";
 import LoginCheckContainer from "@/containers/LoginCheckContainer";
 import { getAreaName, getRegionName } from "@/types/Region";
+import { ErrorType, useErrorMessage } from "@/hooks/useErrorMessage";
 
 const textFieldStyle = css`
   margin-top: 1.2rem !important;
@@ -17,14 +18,82 @@ const textFieldStyle = css`
   }
 `;
 
+interface ProfileEditState extends ErrorType {
+  SUCCESS: "SUCCESS";
+  ERR_NAME_NOT_SET: "ERR_NAME_NOT_SET";
+  ERR_AREA_NOT_SET: "ERR_AREA_NOT_SET";
+  ERR_REGION_NOT_SET: "ERR_REGION_NOT_SET";
+}
+
+const PROFILE_EDIT_STATE: ProfileEditState = {
+  INITIAL: "INITIAL",
+  NOT_FOUND: "ERR_NOT_FOUND",
+  INTERNAL_SERVER_ERROR: "ERR_SERVER",
+  SUCCESS: "SUCCESS",
+  ERR_NAME_NOT_SET: "ERR_NAME_NOT_SET",
+  ERR_AREA_NOT_SET: "ERR_AREA_NOT_SET",
+  ERR_REGION_NOT_SET: "ERR_REGION_NOT_SET",
+};
+
+type ProfileEditObject = "name" | "region" | "area";
+
+const formStateMsg: Record<keyof ProfileEditState, Record<ProfileEditObject, string>> = {
+  SUCCESS: {
+    name: "",
+    region: "",
+    area: "",
+  },
+  ERR_NAME_NOT_SET: {
+    name: "이름을 적어주세요",
+    region: "",
+    area: "",
+  },
+  ERR_AREA_NOT_SET: {
+    name: "",
+    region: "",
+    area: "구를 설정해주세요",
+  },
+  ERR_REGION_NOT_SET: {
+    name: "",
+    region: "지역을 설정해주세요",
+    area: "",
+  },
+  INITIAL: {
+    name: "",
+    region: "",
+    area: "",
+  },
+  NOT_FOUND: {
+    name: "",
+    region: "",
+    area: "",
+  },
+  INTERNAL_SERVER_ERROR: {
+    name: "",
+    region: "",
+    area: "",
+  },
+};
+
 export default function ProfileEdit() {
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const { nickname, setNickname, setRegion, region, area, setArea, changeProfile } = useProfile();
 
+  const { setErrorState, errorText } = useErrorMessage<ProfileEditState, ProfileEditObject>(formStateMsg);
+
   const handleChangeProfile = () => {
-    if (region === null) return;
-    if (area === null) return;
-    if (nickname === null) return;
+    if (nickname === "" || nickname === null) {
+      setErrorState("ERR_NAME_NOT_SET");
+      return;
+    }
+    if (region === null) {
+      setErrorState("ERR_REGION_NOT_SET");
+      return;
+    }
+    if (area === null) {
+      setErrorState("ERR_AREA_NOT_SET");
+      return;
+    }
+
     changeProfile({
       region,
       area,
@@ -40,22 +109,40 @@ export default function ProfileEdit() {
             variant="standard"
             onChange={(e) => setNickname(e.target.value)}
             value={nickname}
+            helperText={errorText.name}
+            error={errorText.name.length !== 0}
             label="이름"
             className={textFieldStyle}
           />
           <Autocomplete
-            renderInput={(params) => <TextField {...params} variant="standard" label="내 시" />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                helperText={errorText.region}
+                error={errorText.region.length !== 0}
+                variant="standard"
+                label="내 시"
+              />
+            )}
             options={getRegionName()}
             className={textFieldStyle}
             value={region}
             onChange={(_e, value) => {
               setRegion(value);
-              setSelectedRegion(value);
+              setArea(null);
             }}
           />
           <Autocomplete
-            renderInput={(params) => <TextField {...params} variant="standard" label="내 구" />}
-            options={selectedRegion === null ? [] : getAreaName(selectedRegion)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                helperText={errorText.area}
+                error={errorText.area.length !== 0}
+                variant="standard"
+                label="내 구"
+              />
+            )}
+            options={region === null ? [] : getAreaName(region)}
             value={area}
             className={textFieldStyle}
             onChange={(_e, value) => {
