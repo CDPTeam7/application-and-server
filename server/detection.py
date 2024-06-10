@@ -6,35 +6,64 @@ from ultralytics import YOLO
 import torch
 import os
 
-pet_model = YOLO("./model/best232.pt")
-
-classNames = [
-    "0",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-]
+model_path = "./model/best137.pt"
+pet_model = YOLO(f"{model_path}")
+if model_path == "./model/best137.pt":
+    classNames = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+    ]
+    targets = ["2", "4", "6", "8", "10", "12"]
+elif model_path == "./model/best232.pt":
+    classNames = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+    ]
+    targets = ["0"]
+elif model_path == "./model/best307.pt":
+    classNames = ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
+    targets = ["3"]
 
 
 def image_detection(image_path, save_path):
@@ -65,8 +94,10 @@ def image_detection(image_path, save_path):
             label = f"{class_name}_{conf}"
             t_size = cv2.getTextSize(label, 0, fontScale=1, thickness=2)[0]
             c2 = x1 + t_size[0], y1 - t_size[1] - 3
-            if class_name in ["2", "4", "6", "8", "10", "12"]:  # target plastic bottle
-                # if class_name == "0":  # target plastic bottle
+            # if class_name in ["2", "4", "6", "8", "10", "12"]:  # target plastic bottle
+            # if class_name == "0":  # target plastic bottle
+            # if class_name == "3":  # target plastic bottle
+            if class_name in targets:  # target plastic bottle
                 target_count += 1
                 color = (222, 82, 175)
             # elif class_name == "4": # other plastic bottle
