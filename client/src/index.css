@@ -9,34 +9,33 @@ body {
 
 * {
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, system-ui, Roboto,
-    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+    "Noto Sans KR", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 
-#root {
+/* #root {
   overflow:hidden;
-}
+} */
 
 .transition-group {
-  overflow:hidden;
+  overflow: hidden;
 }
 
 .page-animation-enter {
-  opacity:0;
+  opacity: 0;
   transition: opacity 300ms ease-in, transform 300ms ease-in;
 }
 .page-animation-enter-active {
-  opacity:1;
+  opacity: 1;
   transition: opacity 300ms ease-in, transform 300ms ease-in;
 }
 .page-animation-exit {
-  display:none;
-  opacity:1;
+  display: none;
+  opacity: 1;
   transition: opacity 300ms ease-in, transform 300ms ease-in;
 }
 .page-animation-exit-active {
-  display:none;
-  opacity:0;
+  display: none;
+  opacity: 0;
   transition: opacity 300ms ease-in, transform 300ms ease-in;
 }

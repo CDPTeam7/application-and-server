@@ -20,6 +20,7 @@ const wrapStyle = css`
       top: 0px;
     }
   }
+  margin-top: 72px;
   position: relative;
   display: flex;
   flex-direction: column;
