@@ -20,13 +20,13 @@ const wrapStyle = css`
       top: 0px;
     }
   }
-  margin-top: 72px;
+  margin-top: 100px;
+  overflow-y: scroll;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
   animation: ease show-up 300ms;
 `;
 
