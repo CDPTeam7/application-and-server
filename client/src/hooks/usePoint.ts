@@ -27,7 +27,7 @@ export const usePoint = () => {
 
   const getCurrentPoint = () => {
     if (point.length === 0) return 0;
-    console.log(point);
+    // console.log(point);
     return point[0].afterTotal ?? 0;
   };
 

@@ -19,7 +19,7 @@ const tabStyle = css`
 export default function RankingPage() {
   const { setRankType, rankType, myRank, deriv, topRank } = useRank();
   const { getCurrentPoint } = usePoint();
-  console.log(myRank);
+  // console.log(myRank);
   return (
     <LoginCheckContainer shouldLogin={true}>
       <SubPage title="순위">
