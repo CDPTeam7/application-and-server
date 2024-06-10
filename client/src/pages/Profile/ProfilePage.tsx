@@ -55,14 +55,14 @@ export default function ProfilePage() {
         <Typography variant="h6" sx={{ marginTop: "16px" }}>
           얼굴 인식이 안되세요?
         </Typography>
-        <Button className={uploadBarStyle}>
+        <Button className={uploadBarStyle} onClick={() => setShow(true)}>
           <CameraIcon />
           <span>카메라 촬영하기</span>
         </Button>
-        <Button className={uploadBarStyle} onClick={() => setShow(true)}>
+        {/* <Button className={uploadBarStyle}>
           <UploadIcon />
           <span>인식 가능한 얼굴 업로드</span>
-        </Button>
+        </Button> */}
         <CameraModal
           isShow={show}
           setShow={setShow}
