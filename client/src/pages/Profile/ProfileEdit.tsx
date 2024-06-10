@@ -1,7 +1,6 @@
 import { Autocomplete, Box, Button, CardActions, TextField } from "@mui/material";
 import { css } from "@linaria/core";
 import useProfile from "@/hooks/useProfile";
-import { useState } from "react";
 import SubPage from "@/components/SubPage";
 import LoginCheckContainer from "@/containers/LoginCheckContainer";
 import { getAreaName, getRegionName } from "@/types/Region";
@@ -24,16 +23,6 @@ interface ProfileEditState extends ErrorType {
   ERR_AREA_NOT_SET: "ERR_AREA_NOT_SET";
   ERR_REGION_NOT_SET: "ERR_REGION_NOT_SET";
 }
-
-const PROFILE_EDIT_STATE: ProfileEditState = {
-  INITIAL: "INITIAL",
-  NOT_FOUND: "ERR_NOT_FOUND",
-  INTERNAL_SERVER_ERROR: "ERR_SERVER",
-  SUCCESS: "SUCCESS",
-  ERR_NAME_NOT_SET: "ERR_NAME_NOT_SET",
-  ERR_AREA_NOT_SET: "ERR_AREA_NOT_SET",
-  ERR_REGION_NOT_SET: "ERR_REGION_NOT_SET",
-};
 
 type ProfileEditObject = "name" | "region" | "area";
 
