@@ -1,30 +1,22 @@
 import { stringifyNumber } from "@/utils/utility";
 // import { Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
 import ListItem from "./ListItem";
-
-export function createRankRow(nickname: string, areaName: string, point: number, derivation: number) {
-  return { nickname, areaName, point, derivation };
-}
+import { TopRankRecord } from "@/types/RankRecord";
 
 interface TableProps {
-  rows: Array<{
-    areaName: string;
-    nickname: string;
-    point: number;
-    derivation: number;
-  }>;
+  rows: TopRankRecord[];
 }
 
 export default function RankTable(props: TableProps) {
   const { rows } = props;
-  return rows.map((value, index) => (
+  return rows.map((value) => (
     <div>
       <ListItem
-        date={`${index + 1}위`}
-        title={value.nickname}
-        description={value.areaName}
-        value={stringifyNumber(value.point)}
-        deriv={value.derivation}
+        rank={`${value.rank}위`}
+        title={value.nick}
+        description={`${value.regionName} ${value.areaName}`}
+        value={stringifyNumber(value.score)}
+        deriv={value.rankDeriv - value.rank}
       />
     </div>
   ));

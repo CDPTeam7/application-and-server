@@ -36,7 +36,7 @@ export default function PointPage() {
       pointNode.push(<div className="monthDivider">{`${curDate.getFullYear()}년 ${curDate.getMonth() + 1}월`}</div>);
       pointNode.push(
         <ListItem
-          date={curDate === undefined ? undefined : `${curDate.getMonth() + 1}.${curDate.getDate()}`}
+          rank={curDate === undefined ? "" : `${curDate.getMonth() + 1}.${curDate.getDate()}`}
           title={value.areaName ?? "undefined"}
           description="재활용에 성공했습니다."
           value={stringifyNumber(value.point)}
@@ -56,7 +56,7 @@ export default function PointPage() {
 
     pointNode.push(
       <ListItem
-        date={curDate === undefined ? undefined : `${curDate.getMonth() + 1}.${curDate.getDate()}`}
+        rank={curDate === undefined ? undefined : `${curDate.getMonth() + 1}.${curDate.getDate()}`}
         title={value.areaName ?? "undefined"}
         description="재활용에 성공했습니다."
         value={stringifyNumber(value.point)}
@@ -84,7 +84,7 @@ export default function PointPage() {
           <div style={{ display: "flex", justifyContent: "center", color: "#787878" }}>재활용 기록이 없습니다.</div>
         )}
 
-        <div className="checkMore" onClick={() => fetchPoint(point.length, point.length + 5)}>
+        <div className="checkMore" onClick={() => fetchPoint(point.length, 5)}>
           5개 더 확인하기
         </div>
       </SubPage>

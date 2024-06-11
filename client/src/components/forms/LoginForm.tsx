@@ -78,7 +78,7 @@ export default function LoginForm(props: LoginFormProps) {
       await props.requestLogin(id.current, pw.current);
       setErrorState("SUCCESS");
     } catch (err) {
-      console.log("aa");
+      // console.log("aa");
       const axiosErr = err as AxiosError<{ result: string }>;
       if (axiosErr.response) {
         if (axiosErr.response.data.result === FORM_STATE.PW_NOT_MATCH) setErrorState("PW_NOT_MATCH");

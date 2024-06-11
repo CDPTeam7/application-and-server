@@ -32,11 +32,11 @@ export const routes: RouteObject[] = [
     path: "/profile/edit",
     element: <ProfileEdit />,
   },
-  {
-    id: "알림",
-    path: "/notifications",
-    element: <NotificationsPage />,
-  },
+  // {
+  //   id: "알림",
+  //   path: "/notifications",
+  //   element: <NotificationsPage />,
+  // },
   {
     id: "포인트",
     path: "/point",

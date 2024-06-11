@@ -44,6 +44,8 @@ const useAuthStore = create<AuthState>((set) => ({
     try {
       const res = await requestLogin(id, password);
 
+      setCookie(TOKEN_ACCESS_ID, res.data.access_token);
+      setCookie(TOKEN_REFRESH_ID, res.data.refresh_token);
       // set cookie for this user
       set({
         currentUser: {
@@ -54,12 +56,9 @@ const useAuthStore = create<AuthState>((set) => ({
         },
       });
 
-      setCookie(TOKEN_ACCESS_ID, res.data.access_token);
-      setCookie(TOKEN_REFRESH_ID, res.data.refresh_token);
-
       return res;
     } catch (err) {
-      console.log("로그인 실패");
+      // console.log("로그인 실패");
       throw err;
     }
   },
@@ -74,8 +73,11 @@ const useAuthStore = create<AuthState>((set) => ({
 
       removeCookie(TOKEN_ACCESS_ID);
       removeCookie(TOKEN_REFRESH_ID);
+      set({
+        currentUser: null,
+      });
     } catch (err) {
-      console.log("로그인 실패");
+      // console.log("로그인 실패");
       throw err;
     }
   },
@@ -91,7 +93,7 @@ const useAuthStore = create<AuthState>((set) => ({
   signUp: async (data: SignUpParam) => {
     try {
       const signUpResponse = await requestSignUp(data);
-      console.log("회원 가입 중...");
+      // console.log("회원 가입 중...");
 
       return signUpResponse;
     } catch (e) {
@@ -121,11 +123,11 @@ const useAuthStore = create<AuthState>((set) => ({
         },
         loginState: "finish",
       });
-      console.log("토큰 확인 성공");
+      // console.log("토큰 확인 성공");
       return res;
     } catch (e) {
-      console.log("토큰 확인 실패 : 클라이언트 에러");
-      console.log(e);
+      // console.log("토큰 확인 실패 : 클라이언트 에러");
+      // console.log(e);
       set({ currentUser: null, loginState: "finish" });
       return e as AxiosResponse;
     }

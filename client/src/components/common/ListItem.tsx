@@ -10,7 +10,7 @@ const wrapStyle = css`
   font-size: 18px;
   font-weight: 600;
   padding: 16px 0;
-  & .date {
+  & .rank {
     width: 100px;
   }
   & .content {
@@ -36,7 +36,7 @@ const wrapStyle = css`
 `;
 
 interface ListItemProps {
-  date?: string;
+  rank?: string;
   title: string;
   description?: string;
   value: string;
@@ -51,7 +51,10 @@ interface ListItemProps {
 export default function ListItem(props: ListItemProps) {
   return (
     <div className={`${wrapStyle} ${props.className}`}>
-      <div className="date">{props.date ? props.date : null}</div>
+      <div className="rank">
+        {props.rank ? props.rank : null}
+        {props.deriv !== undefined ? <Deriv deriv={props.deriv} /> : null}
+      </div>
       <div className="content">
         <div className="article">
           <div className="title">{props.title}</div>
@@ -59,7 +62,6 @@ export default function ListItem(props: ListItemProps) {
         </div>
         <div className={`value ${props.valueClass}`}>{props.value}</div>
       </div>
-      {props.deriv !== undefined ? <Deriv deriv={props.deriv} /> : null}
     </div>
   );
 }

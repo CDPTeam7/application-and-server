@@ -19,7 +19,7 @@ const tabStyle = css`
 export default function RankingPage() {
   const { setRankType, rankType, myRank, deriv, topRank } = useRank();
   const { getCurrentPoint } = usePoint();
-  console.log(myRank);
+  // console.log(myRank);
   return (
     <LoginCheckContainer shouldLogin={true}>
       <SubPage title="순위">
@@ -40,10 +40,10 @@ export default function RankingPage() {
           <Typography variant="subtitle2">내 순위</Typography>
           <Typography variant="h6" sx={{ fontSize: "1.5rem", marginBottom: "8px" }}>
             {myRank} 위
+            <Deriv deriv={deriv - myRank} />
           </Typography>
           <Typography variant="subtitle1" sx={{ marginBottom: "16px" }}>
             {stringifyNumber(getCurrentPoint())} 점
-            <Deriv deriv={deriv} />
           </Typography>
         </Box>
         <PersonalRank topRank={topRank} />

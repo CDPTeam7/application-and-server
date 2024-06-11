@@ -16,19 +16,14 @@ const tabBarStyle = css`
 
 export const tabBarRoutes = [
   {
-    path: "/notifications",
-    icon: <NotificationsIcon />,
-    label: "알림",
+    path: "/",
+    icon: <HomeIcon />,
+    label: "홈",
   },
   {
     path: "/profile",
     icon: <PersonIcon />,
     label: "프로필",
-  },
-  {
-    path: "/",
-    icon: <HomeIcon />,
-    label: "홈",
   },
   {
     path: "/rank",

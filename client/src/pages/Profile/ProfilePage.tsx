@@ -35,6 +35,7 @@ export default function ProfilePage() {
   const { setImage, saveImage, webcamRef } = useWebcam();
   const [show, setShow] = useState(false);
   const currentUser = useAuthStore((state) => state.currentUser);
+  const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   return (
     <LoginCheckContainer shouldLogin={true}>
@@ -42,19 +43,26 @@ export default function ProfilePage() {
         {/* <Box className={profileStyle}>
           <Avatar alt="User" src="/static/images/avatar/1.jpg" sx={{ width: 128, height: 128, marginBottom: "32px" }} />
         </Box> */}
-        <Typography variant="h6">{currentUser?.nickname} 님</Typography>
-        <Typography variant="subtitle2">{`${currentUser?.region} ${currentUser?.area}`}</Typography>
+        <div style={{ display: "flex", justifyContent: "space-between", alignContent: "center" }}>
+          <div>
+            <Typography variant="h6">{currentUser?.nickname} 님</Typography>
+            <Typography variant="subtitle2">{`${currentUser?.region} ${currentUser?.area}`}</Typography>
+          </div>
+          <Button variant="contained" sx={{ color: "white", height: "32px" }} onClick={() => logout()}>
+            로그아웃
+          </Button>
+        </div>
         <Typography variant="h6" sx={{ marginTop: "16px" }}>
           얼굴 인식이 안되세요?
         </Typography>
-        <Button className={uploadBarStyle}>
+        <Button className={uploadBarStyle} onClick={() => setShow(true)}>
           <CameraIcon />
           <span>카메라 촬영하기</span>
         </Button>
-        <Button className={uploadBarStyle} onClick={() => setShow(true)}>
+        {/* <Button className={uploadBarStyle}>
           <UploadIcon />
           <span>인식 가능한 얼굴 업로드</span>
-        </Button>
+        </Button> */}
         <CameraModal
           isShow={show}
           setShow={setShow}

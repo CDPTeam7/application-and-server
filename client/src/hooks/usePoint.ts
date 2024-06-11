@@ -14,7 +14,7 @@ export const usePoint = () => {
           point.push({
             transactionID: value.transactionID,
             areaName: `${value.regionName} ${value.areaName}`,
-            date: new Date(value.date),
+            date: new Date(value.date * 1000), // 단위 차이 적용
             point: value.point,
             afterTotal: value.after_total,
           });
@@ -27,7 +27,7 @@ export const usePoint = () => {
 
   const getCurrentPoint = () => {
     if (point.length === 0) return 0;
-    console.log(point);
+    // console.log(point);
     return point[0].afterTotal ?? 0;
   };
 

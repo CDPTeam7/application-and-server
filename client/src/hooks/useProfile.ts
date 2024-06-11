@@ -9,7 +9,7 @@ export default function useProfile() {
   const currentUser = useAuthStore((state) => state.currentUser);
   const [region, setRegion] = useState<string | null>(null);
   const [area, setArea] = useState<string | null>(null);
-  const [nickname, setNickname] = useState<string | null>(null);
+  const [nickname, setNickname] = useState<string | null>("");
 
   useEffect(() => {
     if (currentUser === null) {
