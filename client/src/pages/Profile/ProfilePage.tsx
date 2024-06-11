@@ -4,7 +4,6 @@ import { Button, Typography } from "@mui/material";
 import LoginCheckContainer from "@/containers/LoginCheckContainer";
 import SubPage from "@/components/SubPage";
 import CameraIcon from "@mui/icons-material/Camera";
-import UploadIcon from "@mui/icons-material/Upload";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/stores/useAuthStore";
 import CameraModal from "@/components/common/CameraModal";
