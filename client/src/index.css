@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap");
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans KR", sans-serif !important;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+    "Noto Sans KR", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+#root {
+  overflow: hidden;
+}
+
+.transition-group {
+  overflow: hidden;
+}
+
+.page-animation-enter {
+  opacity: 0;
+  transition: opacity 300ms ease-in, transform 300ms ease-in;
+}
+.page-animation-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in, transform 300ms ease-in;
+}
+.page-animation-exit {
+  display: none;
+  opacity: 1;
+  transition: opacity 300ms ease-in, transform 300ms ease-in;
+}
+.page-animation-exit-active {
+  display: none;
+  opacity: 0;
+  transition: opacity 300ms ease-in, transform 300ms ease-in;
+}

@@ -1,0 +1,13 @@
+__pycache__/
+.venv/
+.env
+
+model/
+
+test.py
+test2.py
+makedata.py
+APIcall.py
+
+cert.pem
+key.pem

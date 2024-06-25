@@ -1,0 +1,11 @@
+.env
+
+.venv/* 
+
+.vscode/
+
+static/
+docker-compose.yml
+
+cert.pem
+key.pem
